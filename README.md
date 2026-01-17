@@ -1,59 +1,270 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🎯 School Late Attendance Management System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A complete Laravel-based web application to digitally record and manage students who arrive late at school, replacing the manual paper-based system used by teachers.
 
-## About Laravel
+## ✅ Project Status: **COMPLETED**
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+This system is fully implemented with all features from the requirements below.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Quick Start
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+See [INSTALLATION.md](INSTALLATION.md) for complete setup instructions.
 
-## Learning Laravel
+```bash
+# Install dependencies
+composer install
+npm install
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+# Setup database
+cp .env.example .env
+php artisan key:generate
+php artisan migrate:fresh --seed
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# Build and run
+npm run build
+php artisan serve
+```
 
-## Laravel Sponsors
+**Default Admin Login:**
+- Email: admin@school.com
+- Password: password
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 📋 Original Requirements
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Build a Laravel-based web application to digitally record and manage students who arrive late at school, replacing the current manual paper-based system used by teachers.
 
-## Contributing
+The system should be simple, fast, user-friendly, and suitable for daily use by school staff.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+🧩 Core Features Prompt
+1️⃣ Authentication & User Roles
 
-## Code of Conduct
+Create an authentication system with role-based access control.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Roles:
 
-## Security Vulnerabilities
+Admin
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Manage classes
 
-## License
+Manage students
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Manage teachers/users
+
+Manage late reasons
+
+Teacher / Duty Officer
+
+Record student lateness
+
+Homeroom Teacher
+
+View lateness reports for their assigned class only
+
+2️⃣ Class Selection Page
+
+Create a page that displays a list of available classes, for example:
+
+Grade 10 PPLG
+
+Grade 11 PPLG
+
+Grade 12 PPLG
+
+Grade 10 DKV
+
+Grade 11 DKV
+
+Grade 12 DKV
+
+Teachers can click a class to view the list of students in that class.
+
+3️⃣ Student List & Selection
+
+On the selected class page:
+
+Display all students belonging to the class
+
+Each student should have a checkbox
+
+Allow teachers to select one student at a time
+
+Provide a “Continue / Submit” button to proceed
+
+4️⃣ Late Attendance Input Form
+
+After selecting a student, show a form with the following fields:
+
+Student Name (auto-filled, read-only)
+
+Class Name (auto-filled)
+
+Late Reason (dropdown)
+
+Arrival Time (time picker)
+
+Date of Late Arrival (date picker, default: today)
+
+Additional Notes (optional)
+
+Submit button
+
+Late Reason Options:
+
+Woke up late
+
+Transportation issue
+
+Heavy rain
+
+Discipline issue
+
+Other
+
+5️⃣ Data Storage & Relationships
+
+Design database tables with the following relationships:
+
+One class has many students
+
+One student can have many late attendance records
+
+Late attendance records store:
+
+student_id
+
+class_id
+
+reason_id
+
+arrival_time
+
+late_date
+
+notes
+
+status
+
+📊 Reporting & Monitoring Features
+6️⃣ Late Attendance Recap Page
+
+Create a table view showing:
+
+Student Name
+
+Class
+
+Date
+
+Arrival Time
+
+Late Reason
+
+Status
+
+Include features:
+
+Search by student name
+
+Filter by class
+
+Filter by date/month
+
+7️⃣ Student Late History Page
+
+Create a detailed student profile page displaying:
+
+Total number of late arrivals
+
+Complete lateness history
+
+Status indicators:
+
+Warning after 3 late arrivals
+
+Parent notification after 5 late arrivals
+
+📈 Statistics & Insights
+8️⃣ Dashboard Statistics
+
+Display simple analytics:
+
+Top 5 students with the most late arrivals
+
+Classes with the highest lateness frequency
+
+Monthly late attendance summary
+
+🧾 Export & Documentation
+9️⃣ PDF Export Feature
+
+Allow users to:
+
+Export lateness reports per class
+
+Export lateness reports per student
+
+Download reports as PDF files for school documentation
+
+⚙️ System Configuration
+🔟 Late Reason Management
+
+Allow Admin users to:
+
+Add new late reasons
+
+Edit existing reasons
+
+Delete unused reasons
+
+1️⃣1️⃣ Late Attendance Status Management
+
+Each lateness record should have a status:
+
+Pending
+
+Approved
+
+Rejected
+
+Admins or authorized staff can update the status.
+
+🧠 Smart Features (Optional)
+1️⃣2️⃣ Automatic Date & Time
+
+Automatically fill current date and time
+
+Allow manual editing if needed
+
+1️⃣3️⃣ QR Code Class Access (Optional)
+
+Generate a QR code for each class
+
+Scanning the QR code opens the student list of that class
+
+🛠️ Technology Stack
+
+Backend: Laravel (latest version)
+
+Database: MySQL
+
+Frontend: Blade Templates
+
+Styling: Tailwind CSS or Bootstrap
+
+Authentication: Laravel built-in auth system
+
+🎯 Design Principles
+
+Simple and clean UI
+
+Optimized for fast daily input
+
+Mobile-friendly layout
+
+Clear validation messages
+
+📌 Final Notes
+
+The application should follow Laravel MVC architecture, use proper validation, and ensure data security and role-based access.

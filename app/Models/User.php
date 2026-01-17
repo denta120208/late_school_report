@@ -21,6 +21,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'assigned_class_id',
     ];
 
     /**
@@ -44,5 +46,32 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // Relationships
+    public function assignedClass()
+    {
+        return $this->belongsTo(SchoolClass::class, 'assigned_class_id');
+    }
+
+    public function recordedAttendances()
+    {
+        return $this->hasMany(LateAttendance::class, 'recorded_by');
+    }
+
+    // Helper methods
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isTeacher()
+    {
+        return $this->role === 'teacher';
+    }
+
+    public function isHomeroomTeacher()
+    {
+        return $this->role === 'homeroom_teacher';
     }
 }
