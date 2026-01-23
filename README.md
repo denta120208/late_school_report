@@ -1,143 +1,77 @@
-Feature Objective
+Enhance the existing Late Attendance input page by adding a dynamic student selection box that allows teachers to quickly add one or multiple students, search students easily, and enter late details individually per student.
 
-Improve the late attendance recording flow so teachers can select multiple late students first, review them in a separate page, and then submit all records at once with minimal input effort.
-
-This feature aims to reduce repetitive input and speed up daily usage.
+This feature is designed to provide flexibility when students arrive late with different reasons or arrival times.
 
 🧭 Updated User Flow
 
-Teacher selects a class
+Teacher opens the Late Attendance page
 
-Teacher checks (checkbox) students who are late
+A Student Selection Box is displayed
 
-Teacher clicks Submit Selection
+Teacher searches and selects students
 
-System opens a Review & Confirmation Page
+Selected students appear in a Late Student List
 
-Teacher fills one shared late attendance form
+Teacher fills late details per student
 
-Teacher submits once
+Teacher submits all records at once
 
-System:
+1️⃣ Student Selection Box
 
-Saves all records
+Add a selection box with the following capabilities:
 
-Sends notification to Telegram automatically
+Displays all students from the selected class
 
-1️⃣ Student Selection Page (Updated)
+Includes a search input (search by student name)
 
-Display a list of students by class
+Allows selecting more than one student
 
-Each student has a checkbox
+Selected students are added to a list below the box
 
-No late data is entered at this stage
+Prevents duplicate student selection
 
-A button is provided:
+2️⃣ Late Student List (Editable)
 
-“Submit Selection”
+For each selected student, display:
 
-This page is only used to collect late students.
+Student Name (read-only)
 
-2️⃣ Late Student Review Page (New)
+Class (read-only)
 
-After clicking Submit Selection, show a new page containing:
+Late Reason (dropdown, editable per student)
 
-A. Late Student List
-
-Table/list of selected students:
-
-Student Name
-
-Class
-
-Ability to:
-
-Remove a student from the list (optional)
-
-B. Shared Late Attendance Form
-
-One form that applies to all selected students:
-
-Late Reason (dropdown)
-
-Arrival Time (time picker)
+Arrival Time (time picker, editable per student)
 
 Late Date (date picker, default: current date)
 
-This design avoids repetitive data entry.
+Each student’s late data can be edited individually.
 
 3️⃣ Final Submission Behavior
 
-When the teacher clicks Final Submit:
+Teacher clicks Submit
 
-The system saves multiple late attendance records in one action
+System saves multiple late attendance records in one request
 
-Each selected student gets:
+Each student’s late data is stored separately
 
-The same reason
-
-The same arrival time
-
-The same date
-
-No additional confirmation page is required.
-
-4️⃣ Telegram Notification Integration
-
-After successful submission:
-
-The system automatically sends a Telegram message
-
-No extra “Send” button is needed
-
-Telegram Message Content Example:
-
-Class: 10 PPLG
-
-Date: 2026-01-17
-
-Arrival Time: 07:25
-
-Reason: Transportation issue
-
-Late Students:
-
-Student A
-
-Student B
-
-Student C
+Use database transactions to ensure data consistency
 
 ⚙️ System Rules
 
-Telegram notification is sent only after successful database save
+One student can only be added once per submission
 
-If database save fails, Telegram message must NOT be sent
+Arrival time and reason are required per student
 
-Message is sent automatically in the background
+Default late date is the current date
+
+Validation must be applied per student entry
 
 🛠️ Technical Notes
 
-Use batch insert for performance
+Use dynamic form handling (JavaScript)
 
-Use transactions to ensure data consistency
+Use searchable dropdown (e.g., Select2 or custom search)
 
-Telegram Bot API integration
+Batch insert late attendance records
 
-Reuse existing class and student data
-
-🎯 UX Principles
-
-Minimal clicks
-
-Minimal typing
-
-Fast daily operation for teachers
-
-Clear separation between:
-
-Student selection
-
-Data confirmation
-
-Final submission
+Integrate seamlessly with existing Late Attendance logic

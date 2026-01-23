@@ -13,6 +13,21 @@
 
     <div class="py-12 bg-gradient-to-br from-red-50 via-pink-50 to-orange-50">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <!-- Quick Action Buttons -->
+            <div class="mb-8 flex justify-between items-center">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">📝 Pencatatan Keterlambatan</h3>
+                    <p class="text-gray-600 mt-1">Pilih metode pencatatan yang sesuai</p>
+                </div>
+                <a href="{{ route('late-attendance.multi-create') }}" class="group relative bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 hover:from-purple-600 hover:via-pink-600 hover:to-red-600 text-white font-black py-4 px-8 rounded-2xl text-lg shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                    </svg>
+                    <span>Catat Multi-Siswa</span>
+                    <div class="absolute top-0 left-0 right-0 bottom-0 bg-white opacity-0 group-hover:opacity-20 rounded-2xl transition-opacity duration-300"></div>
+                </a>
+            </div>
+
             <!-- Info Card -->
             <div class="bg-gradient-to-r from-blue-500 to-cyan-500 rounded-3xl shadow-2xl p-8 mb-8 text-white">
                 <div class="flex items-start">
@@ -21,13 +36,27 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-bold mb-3">📋 Panduan Singkat</h3>
-                        <div class="space-y-2 text-blue-50">
-                            <p class="flex items-center"><span class="bg-white bg-opacity-20 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-sm font-bold">1</span>Pilih kelas siswa yang terlambat</p>
-                            <p class="flex items-center"><span class="bg-white bg-opacity-20 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-sm font-bold">2</span>Cari nama siswa dalam daftar</p>
-                            <p class="flex items-center"><span class="bg-white bg-opacity-20 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-sm font-bold">3</span>Klik tombol "Catat Telat" pada siswa tersebut</p>
-                            <p class="flex items-center"><span class="bg-white bg-opacity-20 rounded-full w-6 h-6 flex items-center justify-center mr-3 text-sm font-bold">4</span>Isi jam kedatangan dan alasan keterlambatan</p>
+                    <div class="flex-1">
+                        <h3 class="text-2xl font-bold mb-3">📋 Dua Cara Mencatat Keterlambatan</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                                <h4 class="font-bold text-lg mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                    </svg>
+                                    Multi-Siswa (Cepat)
+                                </h4>
+                                <p class="text-blue-100 text-sm">✅ Catat banyak siswa sekaligus<br>✅ Hemat waktu untuk pencatatan massal<br>✅ Klik tombol "Catat Multi-Siswa" di atas</p>
+                            </div>
+                            <div class="bg-white bg-opacity-10 rounded-xl p-4 backdrop-blur-sm">
+                                <h4 class="font-bold text-lg mb-2 flex items-center">
+                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Per-Siswa Individual
+                                </h4>
+                                <p class="text-blue-100 text-sm">✅ Catat satu per satu siswa<br>✅ Detail per kelas<br>✅ Pilih kelas di bawah → klik "Catat Telat"</p>
+                            </div>
                         </div>
                     </div>
                 </div>

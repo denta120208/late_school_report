@@ -76,5 +76,7 @@
                 animation-delay: 4s;
             }
         </style>
+        
+        @stack('scripts')
     </body>
 </html>

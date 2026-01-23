@@ -38,6 +38,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/late-attendance/create/{studentId}', [LateAttendanceController::class, 'create'])->name('late-attendance.create');
     Route::post('/late-attendance', [LateAttendanceController::class, 'store'])->name('late-attendance.store');
     
+    // Multi-student Late Attendance (new dynamic selection feature)
+    Route::get('/late-attendance/multi-create', [LateAttendanceController::class, 'multiCreate'])->name('late-attendance.multi-create');
+    Route::post('/late-attendance/multi-store', [LateAttendanceController::class, 'multiStore'])->name('late-attendance.multi-store');
+    
     // Bulk Late Attendance
     Route::post('/late-attendance/bulk-review', [LateAttendanceController::class, 'bulkReview'])->name('late-attendance.bulk-review');
     Route::post('/late-attendance/bulk-store', [LateAttendanceController::class, 'bulkStore'])->name('late-attendance.bulk-store');

@@ -135,14 +135,14 @@ class ExitPermissionController extends Controller
 
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
-            'notes' => 'nullable|string|max:500',
+            'walas_notes' => 'nullable|string|max:500',
         ]);
 
         $exitPermission->update([
             'walas_status' => $validated['action'] === 'approve' ? 'approved' : 'rejected',
             'walas_approved_by' => $user->id,
             'walas_approved_at' => now(),
-            'walas_notes' => $validated['notes'],
+            'walas_notes' => $validated['walas_notes'] ?? null,
         ]);
 
         $exitPermission->updateOverallStatus();
@@ -162,14 +162,14 @@ class ExitPermissionController extends Controller
 
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
-            'notes' => 'nullable|string|max:500',
+            'admin_notes' => 'nullable|string|max:500',
         ]);
 
         $exitPermission->update([
             'admin_status' => $validated['action'] === 'approve' ? 'approved' : 'rejected',
             'admin_approved_by' => $user->id,
             'admin_approved_at' => now(),
-            'admin_notes' => $validated['notes'],
+            'admin_notes' => $validated['admin_notes'] ?? null,
         ]);
 
         $exitPermission->updateOverallStatus();

@@ -32,6 +32,29 @@
             </div>
             @endif
 
+            <!-- Quick Access Card -->
+            <div class="bg-gradient-to-r from-purple-500 to-pink-500 rounded-3xl shadow-2xl overflow-hidden border-2 border-purple-200 mb-6">
+                <div class="p-6 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-white bg-opacity-20 rounded-2xl p-4 mr-4">
+                            <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-white">🚀 Fitur Baru: Multi-Student Selection</h3>
+                            <p class="text-purple-100 mt-1">Pilih banyak siswa sekaligus dengan pencarian & filter yang mudah!</p>
+                        </div>
+                    </div>
+                    <a href="{{ route('late-attendance.multi-create') }}" class="bg-white hover:bg-gray-100 text-purple-600 font-black py-4 px-8 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center">
+                        <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                        </svg>
+                        Coba Sekarang!
+                    </a>
+                </div>
+            </div>
+
             <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-indigo-100">
                 <div class="bg-gradient-to-r from-red-500 to-pink-500 p-6">
                     <div class="flex justify-between items-center">

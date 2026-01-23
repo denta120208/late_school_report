@@ -158,7 +158,6 @@
                     @if(auth()->user()->isHomeroomTeacher() && auth()->user()->assigned_class_id == $exitPermission->class_id && $exitPermission->walas_status === 'pending')
                         <form method="POST" action="{{ route('exit-permissions.walas-approve', $exitPermission->id) }}" class="mt-6" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
                             @csrf
-                            @method('PATCH')
 
                             <div class="mb-4">
                                 <label for="walas_notes" class="block text-gray-800 text-sm font-bold mb-2">Catatan (Opsional)</label>
@@ -237,7 +236,6 @@
                     @if(auth()->user()->isAdmin() && $exitPermission->admin_status === 'pending')
                         <form method="POST" action="{{ route('exit-permissions.admin-approve', $exitPermission->id) }}" class="mt-6" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
                             @csrf
-                            @method('PATCH')
 
                             <div class="mb-4">
                                 <label for="admin_notes" class="block text-gray-800 text-sm font-bold mb-2">Catatan (Opsional)</label>
