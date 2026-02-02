@@ -85,6 +85,28 @@
                             @enderror
                         </div>
 
+                        <!-- Permission Type -->
+                        <div class="mb-6">
+                            <label for="permission_type" class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Jenis Izin <span class="text-red-500">*</span>
+                            </label>
+                            <select id="permission_type" name="permission_type" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 transition duration-300" required>
+                                <option value="">Pilih Jenis Izin</option>
+                                <option value="sick" {{ old('permission_type') == 'sick' ? 'selected' : '' }}>Sakit</option>
+                                <option value="leave_early" {{ old('permission_type') == 'leave_early' ? 'selected' : '' }}>Izin Pulang Awal</option>
+                                <option value="permission_out" {{ old('permission_type') == 'permission_out' ? 'selected' : '' }}>Izin Keluar</option>
+                            </select>
+                            @error('permission_type')
+                                <p class="text-red-500 text-sm font-semibold mt-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
                         <!-- Exit Date -->
                         <div class="mb-6">
                             <label for="exit_date" class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
@@ -102,16 +124,33 @@
                             @enderror
                         </div>
 
-                        <!-- Exit Time (Optional) -->
+                        <!-- Time Out -->
                         <div class="mb-6">
-                            <label for="exit_time" class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
+                            <label for="time_out" class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
                                 <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                 </svg>
-                                Jam Keluar <span class="text-gray-400">(Opsional)</span>
+                                Jam Keluar <span class="text-red-500">*</span>
                             </label>
-                            <input type="time" id="exit_time" name="exit_time" value="{{ old('exit_time') }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition duration-300">
-                            @error('exit_time')
+                            <input type="time" id="time_out" name="time_out" value="{{ old('time_out', now()->format('H:i')) }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition duration-300" required step="60">
+                            @error('time_out')
+                                <p class="text-red-500 text-sm font-semibold mt-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
+                        <!-- Time In -->
+                        <div class="mb-6" id="time_in_section">
+                            <label for="time_in" class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-teal-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                                Jam Kembali <span class="text-gray-400">(Opsional - tergantung jenis izin)</span>
+                            </label>
+                            <input type="time" id="time_in" name="time_in" value="{{ old('time_in') }}" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-teal-500 focus:ring-2 focus:ring-teal-200 transition duration-300" step="60">
+                            @error('time_in')
                                 <p class="text-red-500 text-sm font-semibold mt-2 flex items-center">
                                     <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                                     {{ $message }}
@@ -174,8 +213,47 @@
         </div>
     </div>
 
-    @if(auth()->user()->role !== 'homeroom_teacher')
     <script>
+        // Permission type handling - show/hide Time In field based on permission type
+        document.getElementById('permission_type').addEventListener('change', function() {
+            const permissionType = this.value;
+            const timeInSection = document.getElementById('time_in_section');
+            const timeInInput = document.getElementById('time_in');
+            const timeInLabel = timeInSection.querySelector('label span');
+            
+            if (permissionType === 'sick') {
+                // For sick leave, Time In is not needed (staying home)
+                timeInSection.style.display = 'none';
+                timeInInput.required = false;
+                timeInInput.value = ''; // Clear the value
+            } else if (permissionType === 'leave_early') {
+                // For leave early, Time In is not needed (going home)
+                timeInSection.style.display = 'none';
+                timeInInput.required = false;
+                timeInInput.value = ''; // Clear the value
+            } else if (permissionType === 'permission_out') {
+                // For permission out, Time In is required (must return to class)
+                timeInSection.style.display = 'block';
+                timeInInput.required = true;
+                timeInLabel.innerHTML = '<span class="text-red-500">* (Wajib diisi - waktu kembali ke kelas)</span>';
+            } else {
+                // Default state
+                timeInSection.style.display = 'block';
+                timeInInput.required = false;
+                timeInLabel.textContent = '(Opsional - tergantung jenis izin)';
+            }
+        });
+
+        // Trigger on page load if there's an old value
+        document.addEventListener('DOMContentLoaded', function() {
+            const permissionTypeSelect = document.getElementById('permission_type');
+            if (permissionTypeSelect.value) {
+                permissionTypeSelect.dispatchEvent(new Event('change'));
+            }
+        });
+
+
+        @if(auth()->user()->role !== 'homeroom_teacher')
         // AJAX to load students when class is selected
         document.getElementById('class_id').addEventListener('change', function() {
             const classId = this.value;
@@ -198,6 +276,6 @@
                     .catch(error => console.error('Error loading students:', error));
             }
         });
+        @endif
     </script>
-    @endif
 </x-app-layout>

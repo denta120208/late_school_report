@@ -33,6 +33,16 @@
                 </div>
             @endif
 
+            <!-- Error Message -->
+            @if(session('error'))
+                <div class="mb-6 bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-4 rounded-2xl shadow-xl flex items-center">
+                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-bold">{{ session('error') }}</span>
+                </div>
+            @endif
+
             <!-- Main Details Card -->
             <div class="bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-200 mb-6">
                 <div class="bg-green-500 p-4">
@@ -65,10 +75,32 @@
                             <p class="font-bold text-gray-900">{{ $exitPermission->exit_date->format('d F Y') }}</p>
                         </div>
                         
-                        @if($exitPermission->exit_time)
+                        <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                            <p class="text-xs text-gray-600 font-semibold mb-1">Jenis Izin</p>
+                            <p class="font-bold text-gray-900">
+                                @if($exitPermission->permission_type === 'sick')
+                                     Sakit
+                                @elseif($exitPermission->permission_type === 'leave_early')
+                                     Izin Pulang Awal
+                                @elseif($exitPermission->permission_type === 'permission_out')
+                                     Izin Keluar
+                                @else
+                                    {{ $exitPermission->permission_type }}
+                                @endif
+                            </p>
+                        </div>
+                        
+                        @if($exitPermission->time_out)
                         <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
                             <p class="text-xs text-gray-600 font-semibold mb-1">Jam Keluar</p>
-                            <p class="font-bold text-gray-900">{{ $exitPermission->exit_time->format('H:i') }} WIB</p>
+                            <p class="font-bold text-gray-900">{{ $exitPermission->time_out }}</p>
+                        </div>
+                        @endif
+                        
+                        @if($exitPermission->time_in)
+                        <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                            <p class="text-xs text-gray-600 font-semibold mb-1">Jam Kembali</p>
+                            <p class="font-bold text-gray-900">{{ $exitPermission->time_in }}</p>
                         </div>
                         @endif
                         
@@ -76,11 +108,19 @@
                             <p class="text-xs text-gray-600 font-semibold mb-2">Status Keseluruhan</p>
                             @if($exitPermission->status === 'approved')
                                 <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full bg-green-500 text-white">
-                                    ✓ Disetujui
+                                    ✓ Fully Approved
                                 </span>
                             @elseif($exitPermission->status === 'rejected')
                                 <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full bg-red-500 text-white">
                                     ✗ Ditolak
+                                </span>
+                            @elseif($exitPermission->walas_status === 'pending')
+                                <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full bg-yellow-500 text-white">
+                                    ⏳ Waiting for Homeroom Teacher Approval
+                                </span>
+                            @elseif($exitPermission->walas_status === 'approved' && $exitPermission->admin_status === 'pending')
+                                <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full bg-blue-500 text-white">
+                                    ⏳ Approved by Homeroom Teacher - Waiting for Admin Approval
                                 </span>
                             @else
                                 <span class="px-3 py-1 inline-flex text-sm font-bold rounded-full bg-yellow-500 text-white">
@@ -155,7 +195,7 @@
                     </div>
                     @endif
 
-                    @if(auth()->user()->isHomeroomTeacher() && auth()->user()->assigned_class_id == $exitPermission->class_id && $exitPermission->walas_status === 'pending')
+                    @if(auth()->user()->role === 'homeroom_teacher' && $exitPermission->walas_status === 'pending')
                         <form method="POST" action="{{ route('exit-permissions.walas-approve', $exitPermission->id) }}" class="mt-6" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
                             @csrf
 
@@ -234,29 +274,58 @@
                     @endif
 
                     @if(auth()->user()->isAdmin() && $exitPermission->admin_status === 'pending')
-                        <form method="POST" action="{{ route('exit-permissions.admin-approve', $exitPermission->id) }}" class="mt-6" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
-                            @csrf
+                        @if($exitPermission->walas_status === 'approved')
+                            {{-- Admin can approve after homeroom teacher approval --}}
+                            <form method="POST" action="{{ route('exit-permissions.admin-approve', $exitPermission->id) }}" class="mt-6" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
+                                @csrf
 
-                            <div class="mb-4">
-                                <label for="admin_notes" class="block text-gray-800 text-sm font-bold mb-2">Catatan (Opsional)</label>
-                                <textarea id="admin_notes" name="admin_notes" rows="3" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition duration-300" placeholder="Tambahkan catatan jika diperlukan..."></textarea>
-                            </div>
+                                <div class="mb-4">
+                                    <label for="admin_notes" class="block text-gray-800 text-sm font-bold mb-2">Catatan (Opsional)</label>
+                                    <textarea id="admin_notes" name="admin_notes" rows="3" class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition duration-300" placeholder="Tambahkan catatan jika diperlukan..."></textarea>
+                                </div>
 
-                            <div class="flex gap-3">
-                                <button type="submit" name="action" value="approve" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                <div class="flex gap-3">
+                                    <button type="submit" name="action" value="approve" class="flex-1 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Setujui
+                                    </button>
+                                    <button type="submit" name="action" value="reject" class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        Tolak
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            {{-- Admin approval disabled until homeroom teacher approves --}}
+                            <div class="mt-6 p-4 bg-gray-100 rounded-xl border-2 border-gray-200">
+                                <div class="flex items-center mb-3">
+                                    <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 15.5c-.77.833.192 2.5 1.732 2.5z"></path>
                                     </svg>
-                                    Setujui
-                                </button>
-                                <button type="submit" name="action" value="reject" class="flex-1 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center justify-center">
-                                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                    Tolak
-                                </button>
+                                    <p class="text-gray-700 font-semibold">Admin Approval Pending</p>
+                                </div>
+                                <p class="text-gray-600 text-sm mb-4">Admin approval is currently disabled. This request must be approved by the Homeroom Teacher first before Admin can review it.</p>
+                                
+                                <div class="flex gap-3">
+                                    <button disabled class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-xl cursor-not-allowed flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                                        </svg>
+                                        Setujui (Disabled)
+                                    </button>
+                                    <button disabled class="flex-1 bg-gray-300 text-gray-500 font-bold py-3 px-6 rounded-xl cursor-not-allowed flex items-center justify-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
+                                        Tolak (Disabled)
+                                    </button>
+                                </div>
                             </div>
-                        </form>
+                        @endif
                     @endif
                 </div>
             </div>

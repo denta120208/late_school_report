@@ -11,7 +11,7 @@
                     </h2>
                     <p class="text-green-100 mt-2">{{ $class->description }} • {{ $exitPermissions->count() }} Permohonan Izin Keluar</p>
                 </div>
-                <a href="{{ route('exit-permissions.classes') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
+                <a href="{{ route('exit-permissions.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -142,14 +142,16 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Action Button -->
-                                    <div class="ml-4">
-                                        <a href="{{ route('exit-permissions.show', $permission->id) }}" class="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center">
-                                            @if(auth()->user()->isHomeroomTeacher() && $permission->walas_status === 'pending')
+                                    <!-- Action Section -->
+                                    <div class="ml-4 min-w-max">
+                                        <!-- View Detail Button - Always show for all users -->
+                                        <a href="{{ route('exit-permissions.show', $permission->id) }}" 
+                                           class="bg-gradient-to-r from-green-500 to-teal-600 hover:from-green-600 hover:to-teal-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 flex items-center">
+                                            @if(auth()->user()->role === 'homeroom_teacher' && $permission->walas_status === 'pending')
                                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                                 </svg>
-                                                Setujui/Tolak
+                                                Review & Approve
                                             @else
                                                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>

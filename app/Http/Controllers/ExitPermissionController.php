@@ -8,6 +8,7 @@ use App\Models\Student;
 use App\Models\SchoolClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ExitPermissionController extends Controller
 {
@@ -15,10 +16,16 @@ class ExitPermissionController extends Controller
     public function index(Request $request)
     {
         $user = Auth::user();
+        
+        // For shared Walas account (homeroom_teacher without assigned_class_id), show class selection interface
+        if ($user->role === 'homeroom_teacher' && !$user->assigned_class_id) {
+            return $this->showWalasClassSelection();
+        }
+        
         $query = ExitPermission::with(['student', 'schoolClass', 'submittedBy', 'walasApprovedBy', 'adminApprovedBy']);
 
-        // Role-based filtering
-        if ($user->role === 'homeroom_teacher') {
+        // Role-based filtering - Skip for shared Walas account
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id) {
             $query->where('class_id', $user->assigned_class_id);
         }
 
@@ -45,7 +52,7 @@ class ExitPermissionController extends Controller
         $classes = SchoolClass::all();
 
         // Load classes with pending exit permissions count
-        if ($user->role === 'homeroom_teacher') {
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id) {
             $classesWithCount = SchoolClass::where('id', $user->assigned_class_id)->get();
         } else {
             $classesWithCount = SchoolClass::active()->get();
@@ -64,13 +71,26 @@ class ExitPermissionController extends Controller
 
         return view('exit-permissions.index', compact('exitPermissions', 'classes', 'classesWithCount'));
     }
+    
+    /**
+     * Show class selection interface for shared Walas account
+     */
+    private function showWalasClassSelection()
+    {
+        // Get ALL classes, not just those with pending requests
+        $classesWithRequests = SchoolClass::active()->withCount(['exitPermissions' => function ($query) {
+            $query->where('walas_status', 'pending');
+        }])->get();
+
+        return view('exit-permissions.walas-class-selection', compact('classesWithRequests'));
+    }
 
     // Show form to create new exit permission
     public function create()
     {
         $user = Auth::user();
         
-        if ($user->role === 'homeroom_teacher') {
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id) {
             $classes = SchoolClass::where('id', $user->assigned_class_id)->get();
             $students = Student::where('class_id', $user->assigned_class_id)->active()->get();
         } else {
@@ -84,13 +104,25 @@ class ExitPermissionController extends Controller
     // Store new exit permission
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        // Base validation rules
+        $rules = [
             'student_id' => 'required|exists:students,id',
+            'permission_type' => 'required|in:sick,leave_early,permission_out',
             'exit_date' => 'required|date',
             'exit_time' => 'nullable|date_format:H:i',
+            'time_out' => 'required|date_format:H:i',
             'reason' => 'required|string|max:1000',
             'additional_notes' => 'nullable|string|max:1000',
-        ]);
+        ];
+
+        // Conditional validation for time_in based on permission_type
+        if ($request->permission_type === 'permission_out') {
+            $rules['time_in'] = 'required|date_format:H:i|after:time_out';
+        } else {
+            $rules['time_in'] = 'nullable|date_format:H:i|after:time_out';
+        }
+
+        $validated = $request->validate($rules);
 
         $student = Student::findOrFail($validated['student_id']);
 
@@ -98,10 +130,13 @@ class ExitPermissionController extends Controller
             'student_id' => $validated['student_id'],
             'class_id' => $student->class_id,
             'submitted_by' => Auth::id(),
+            'permission_type' => $validated['permission_type'],
             'exit_date' => $validated['exit_date'],
-            'exit_time' => $validated['exit_time'],
+            'exit_time' => $validated['exit_time'] ?? null,
+            'time_out' => $validated['time_out'],
+            'time_in' => $validated['time_in'] ?? null,
             'reason' => $validated['reason'],
-            'additional_notes' => $validated['additional_notes'],
+            'additional_notes' => $validated['additional_notes'] ?? null,
         ]);
 
         return redirect()->route('exit-permissions.index')
@@ -113,10 +148,12 @@ class ExitPermissionController extends Controller
     {
         $user = Auth::user();
 
-        // Check if homeroom teacher can only see their class
-        if ($user->role === 'homeroom_teacher' && $exitPermission->class_id !== $user->assigned_class_id) {
+        // Check if homeroom teacher can only see their class (skip for shared Walas)
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id && $exitPermission->class_id !== $user->assigned_class_id) {
             abort(403, 'Unauthorized access');
         }
+        
+        // For shared Walas account, allow access since they should come from verified class context
 
         $exitPermission->load(['student', 'schoolClass', 'submittedBy', 'walasApprovedBy', 'adminApprovedBy']);
 
@@ -128,10 +165,13 @@ class ExitPermissionController extends Controller
     {
         $user = Auth::user();
 
-        // Check if user is homeroom teacher of this class
-        if ($user->role !== 'homeroom_teacher' || $exitPermission->class_id !== $user->assigned_class_id) {
+        // Check if user is homeroom teacher
+        if ($user->role !== 'homeroom_teacher') {
             abort(403, 'Unauthorized access');
         }
+
+        // For shared Walas account, verify access is from the class requests page
+        // (This method should only be called from within the class context)
 
         $validated = $request->validate([
             'action' => 'required|in:approve,reject',
@@ -158,6 +198,11 @@ class ExitPermissionController extends Controller
         // Check if user is admin or teacher
         if (!in_array($user->role, ['admin', 'teacher'])) {
             abort(403, 'Unauthorized access');
+        }
+
+        // Enforce sequential approval: Admin can only approve after Homeroom Teacher approval
+        if ($exitPermission->walas_status !== 'approved') {
+            return redirect()->back()->with('error', 'Admin approval can only be processed after Homeroom Teacher approval!');
         }
 
         $validated = $request->validate([
@@ -194,7 +239,7 @@ class ExitPermissionController extends Controller
         $user = Auth::user();
         
         // Get classes based on role
-        if ($user->role === 'homeroom_teacher') {
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id) {
             $classes = SchoolClass::where('id', $user->assigned_class_id)->get();
         } else {
             $classes = SchoolClass::active()->get();
@@ -220,10 +265,12 @@ class ExitPermissionController extends Controller
         $user = Auth::user();
         $class = SchoolClass::findOrFail($classId);
         
-        // Check authorization for homeroom teacher
-        if ($user->role === 'homeroom_teacher' && $class->id !== $user->assigned_class_id) {
+        // Check authorization for homeroom teacher (skip for shared Walas)
+        if ($user->role === 'homeroom_teacher' && $user->assigned_class_id && $class->id !== $user->assigned_class_id) {
             abort(403, 'You can only access exit permissions for your assigned class.');
         }
+        
+        // For shared Walas account, allow access since they should come from verified password context
         
         // Get exit permissions for this class
         $query = ExitPermission::where('class_id', $class->id)

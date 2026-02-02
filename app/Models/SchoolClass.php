@@ -14,6 +14,7 @@ class SchoolClass extends Model
         'major',
         'description',
         'is_active',
+        'password',
     ];
 
     protected $casts = [

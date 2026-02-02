@@ -6,6 +6,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\LateAttendanceController;
 use App\Http\Controllers\ExitPermissionController;
+use App\Http\Controllers\WalasController;
 use App\Http\Controllers\Admin\ClassManagementController;
 use App\Http\Controllers\Admin\StudentManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -65,7 +66,7 @@ Route::middleware(['auth'])->group(function () {
         // AJAX endpoint to get students by class
         Route::get('/ajax/students-by-class', [ExitPermissionController::class, 'getStudentsByClass'])->name('students-by-class');
         
-        // Walas approval (homeroom teacher only)
+        // Walas approval (homeroom teacher only) - Allow shared Walas access
         Route::middleware(['role:homeroom_teacher'])->group(function () {
             Route::post('/{exitPermission}/walas-approve', [ExitPermissionController::class, 'walasApprove'])->name('walas-approve');
         });
@@ -74,6 +75,13 @@ Route::middleware(['auth'])->group(function () {
         Route::middleware(['role:admin,teacher'])->group(function () {
             Route::post('/{exitPermission}/admin-approve', [ExitPermissionController::class, 'adminApprove'])->name('admin-approve');
         });
+    });
+    
+    // Walas (Homeroom Teacher) routes
+    Route::middleware(['role:homeroom_teacher'])->prefix('walas')->name('walas.')->group(function () {
+        Route::get('/dashboard', [WalasController::class, 'dashboard'])->name('dashboard');
+        Route::get('/classes/{class}/verify-password', [WalasController::class, 'showPasswordForm'])->name('verify-password');
+        Route::post('/classes/{class}/verify-password', [WalasController::class, 'verifyPasswordAndShowRequests'])->name('verify-password.store');
     });
     
     // Admin only routes

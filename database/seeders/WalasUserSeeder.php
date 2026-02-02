@@ -1,0 +1,24 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class WalasUserSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Create shared Walas account
+        \App\Models\User::create([
+            'name' => 'Walas Shared Account',
+            'email' => 'walas@sekolah.com',
+            'password' => \Illuminate\Support\Facades\Hash::make('walas2024'),
+            'role' => 'homeroom_teacher',
+            'email_verified_at' => now(),
+        ]);
+    }
+}
