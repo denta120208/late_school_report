@@ -1,4 +1,4 @@
-<nav x-data="{ open: false }" class="bg-gradient-to-r from-purple-600 via-pink-600 to-red-600 shadow-2xl border-b-4 border-white border-opacity-30 backdrop-blur-lg">
+<nav x-data="{ open: false }" class="navbar-primary shadow-2xl border-b-4 border-white border-opacity-20">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-20">
@@ -11,9 +11,9 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                             </svg>
                         </div>
-                        <div class="hidden md:block">
-                            <div class="text-white font-black text-xl drop-shadow-lg">SISTEM TELAT</div>
-                            <div class="text-pink-100 text-xs">Digital School System</div>
+                        <div class="block">
+                            <div class="text-white font-black text-xl drop-shadow-lg">EduGate.</div>
+                            <div class="text-blue-100 text-xs">Digital School System</div>
                         </div>
                     </a>
                 </div>
@@ -116,46 +116,49 @@
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden header-primary border-t border-white/10">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+            <a href="{{ route('dashboard') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('classes.index')" :active="request()->routeIs('classes.*')">
+            </a>
+            <a href="{{ route('classes.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('classes.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Catat Siswa Telat') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('late-attendance.index')" :active="request()->routeIs('late-attendance.index')">
+            </a>
+            <div class="border-t border-white/10 my-2"></div>
+            <div class="px-4 py-2 text-xs font-semibold text-blue-200 uppercase tracking-wider">
+                Laporan
+            </div>
+            <a href="{{ route('late-attendance.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('late-attendance.index') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Data Keterlambatan') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('late-attendance.report')" :active="request()->routeIs('late-attendance.report')">
+            </a>
+            <a href="{{ route('late-attendance.report') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('late-attendance.report') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Laporan Harian') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('exit-permissions.index')" :active="request()->routeIs('exit-permissions.*')">
+            </a>
+            <div class="border-t border-white/10 my-2"></div>
+            <a href="{{ route('exit-permissions.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('exit-permissions.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Izin Keluar Siswa') }}
-            </x-responsive-nav-link>
+            </a>
         </div>
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
+                <div class="font-medium text-sm text-blue-200">{{ Auth::user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile.edit')">
+                <a href="{{ route('profile.edit') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300">
                     {{ __('Profile') }}
-                </x-responsive-nav-link>
+                </a>
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
 
-                    <x-responsive-nav-link :href="route('logout')"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();">
+                    <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300">
                         {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                    </a>
                 </form>
             </div>
         </div>

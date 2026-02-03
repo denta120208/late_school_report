@@ -8,15 +8,54 @@
         <title>{{ config('app.name', 'Laravel') }} - Sistem Keterlambatan Siswa</title>
 
         <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700,800,900&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
         
         <style>
             body {
-                font-family: 'Inter', sans-serif;
+                font-family: 'Poppins', sans-serif;
+            }
+            /* Poppins Font Classes */
+            .poppins-regular {
+                font-family: "Poppins", sans-serif;
+                font-weight: 400;
+                font-style: normal;
+            }
+            .poppins-semibold {
+                font-family: "Poppins", sans-serif;
+                font-weight: 600;
+                font-style: normal;
+            }
+            .poppins-bold {
+                font-family: "Poppins", sans-serif;
+                font-weight: 700;
+                font-style: normal;
+            }
+            /* Navbar with primary color */
+            .navbar-primary {
+                background-color: #160B6A !important;
+                position: relative;
+                z-index: 999;
+            }
+            /* Card with gradient from #231591 to #0A062B */
+            .card-primary {
+                background: linear-gradient(135deg, #231591 0%, #0A062B 100%) !important;
+                color: white !important;
+            }
+            .card-primary * {
+                color: white !important;
+            }
+            /* Header with gradient color */
+            .header-primary {
+                background: linear-gradient(135deg, #231591 0%, #0A062B 100%) !important;
+                color: white !important;
+            }
+            .header-primary * {
+                color: white !important;
             }
             @keyframes gradient {
                 0% { background-position: 0% 50%; }
