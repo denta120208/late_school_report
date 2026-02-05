@@ -204,6 +204,487 @@
                 background: #F59E0B;
             }
 
+            .walas-selection-page {
+                min-height: 100vh;
+            }
+
+            .walas-selection-hero {
+                background: #160B6A;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .walas-selection-hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(circle at 88% 22%, rgba(126, 123, 149, 0.34) 0%, rgba(126, 123, 149, 0) 44%),
+                    radial-gradient(circle at 10% 16%, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 38%);
+                pointer-events: none;
+            }
+
+            .walas-selection-hero-inner {
+                position: relative;
+                z-index: 1;
+            }
+
+            .walas-selection-subtitle {
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            .walas-info-card {
+                background: rgba(255, 255, 255, 0.70);
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 16px;
+                padding: 16px;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+            }
+
+            .walas-info-title {
+                color: #160B6A;
+                font-weight: 800;
+            }
+
+            .walas-info-text {
+                color: rgba(17, 24, 39, 0.72);
+            }
+
+            .walas-section-card {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 16px;
+                box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+                overflow: hidden;
+            }
+
+            .walas-section-header {
+                padding: 18px 24px;
+                background: linear-gradient(90deg, #160B6A 70%);
+                color: #ffffff;
+                font-weight: 900;
+            }
+
+            .walas-section-body {
+                padding: 24px;
+            }
+
+            .walas-grid {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+
+            .walas-class-card {
+                background:
+                    radial-gradient(circle at 100% 0%, rgba(126, 123, 149, 0.95) 0%, rgba(126, 123, 149, 0.55) 22%, rgba(126, 123, 149, 0) 45%),
+                    #160B6A;
+                border-radius: 16px;
+                box-shadow: 0 14px 34px rgba(22, 11, 106, 0.22);
+                overflow: hidden;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+
+            .walas-class-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 18px 44px rgba(22, 11, 106, 0.28);
+            }
+
+            .walas-class-card-body {
+                padding: 20px;
+            }
+
+            .walas-class-title {
+                color: #ffffff;
+                font-weight: 900;
+                font-size: 18px;
+            }
+
+            .walas-class-meta {
+                color: rgba(255, 255, 255, 0.78);
+            }
+
+            .walas-class-desc {
+                color: rgba(255, 255, 255, 0.72);
+            }
+
+            .walas-badge {
+                display: inline-flex;
+                align-items: center;
+                padding: 6px 12px;
+                border-radius: 9999px;
+                font-size: 12px;
+                font-weight: 800;
+                line-height: 1;
+                color: #ffffff;
+                box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+                white-space: nowrap;
+            }
+
+            .walas-badge-pending {
+                background: #F59E0B;
+            }
+
+            .walas-badge-empty {
+                background: rgba(255, 255, 255, 0.16);
+                border: 1px solid rgba(255, 255, 255, 0.30);
+                color: rgba(255, 255, 255, 0.85);
+                box-shadow: none;
+            }
+
+            .walas-security-text {
+                color: rgba(255, 255, 255, 0.80);
+                font-weight: 700;
+                font-size: 13px;
+            }
+
+            .walas-primary-btn {
+                background: #160B6A;
+                border: 1px solid rgba(255, 255, 255, 0.22);
+                color: #ffffff;
+                border-radius: 12px;
+                padding: 10px 14px;
+                font-weight: 800;
+                box-shadow: 0 12px 26px rgba(22, 11, 106, 0.28);
+                transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            }
+
+            .walas-primary-btn:hover {
+                background: #120856;
+                transform: translateY(-1px);
+                box-shadow: 0 16px 34px rgba(22, 11, 106, 0.34);
+            }
+
+            .walas-secondary-btn {
+                background: rgba(255, 255, 255, 0.14);
+                border: 1px solid rgba(255, 255, 255, 0.30);
+                color: #ffffff;
+                border-radius: 12px;
+                padding: 10px 14px;
+                font-weight: 800;
+                transition: background 0.2s ease;
+            }
+
+            .walas-secondary-btn:hover {
+                background: rgba(255, 255, 255, 0.20);
+            }
+
+            .walas-alert {
+                border-radius: 16px;
+                padding: 14px 16px;
+                border: 1px solid;
+                box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08);
+            }
+
+            .walas-alert-success {
+                background: rgba(34, 197, 94, 0.12);
+                border-color: rgba(34, 197, 94, 0.30);
+                color: #166534;
+            }
+
+            .walas-alert-error {
+                background: rgba(239, 68, 68, 0.10);
+                border-color: rgba(239, 68, 68, 0.28);
+                color: #7F1D1D;
+            }
+
+            .walas-empty {
+                padding: 44px 14px;
+                text-align: center;
+                color: rgba(17, 24, 39, 0.62);
+            }
+
+            .walas-modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(2, 6, 23, 0.55);
+                z-index: 50;
+                padding: 16px;
+            }
+
+            .walas-modal-wrap {
+                min-height: 100vh;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .walas-modal {
+                width: 100%;
+                max-width: 520px;
+                background: #ffffff;
+                border-radius: 18px;
+                overflow: hidden;
+                box-shadow: 0 22px 60px rgba(2, 6, 23, 0.38);
+                border: 1px solid rgba(22, 11, 106, 0.14);
+            }
+
+            .walas-modal-header {
+                padding: 16px 18px;
+                background: linear-gradient(90deg, #160B6A 70%);
+                color: #ffffff;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+            }
+
+            .walas-modal-title {
+                font-weight: 900;
+                font-size: 16px;
+            }
+
+            .walas-modal-close {
+                background: rgba(255, 255, 255, 0.14);
+                border: 1px solid rgba(255, 255, 255, 0.28);
+                color: #ffffff;
+                border-radius: 10px;
+                padding: 6px;
+                transition: background 0.2s ease;
+            }
+
+            .walas-modal-close:hover {
+                background: rgba(255, 255, 255, 0.20);
+            }
+
+            .walas-modal-body {
+                padding: 18px;
+            }
+
+            .walas-modal-hint {
+                background: rgba(245, 158, 11, 0.12);
+                border: 1px solid rgba(245, 158, 11, 0.25);
+                border-radius: 14px;
+                padding: 12px;
+                color: rgba(120, 53, 15, 0.92);
+                font-weight: 700;
+            }
+
+            .walas-modal-label {
+                font-weight: 800;
+                color: rgba(17, 24, 39, 0.86);
+                font-size: 13px;
+                margin-bottom: 8px;
+                display: block;
+            }
+
+            .walas-modal-input {
+                width: 100%;
+                padding: 12px 14px;
+                border-radius: 12px;
+                border: 1px solid rgba(22, 11, 106, 0.22);
+                outline: none;
+                transition: box-shadow 0.2s ease, border-color 0.2s ease;
+            }
+
+            .walas-modal-input:focus {
+                border-color: rgba(22, 11, 106, 0.65);
+                box-shadow: 0 0 0 3px rgba(22, 11, 106, 0.16);
+            }
+
+            .walas-modal-footnote {
+                color: rgba(17, 24, 39, 0.62);
+                font-size: 12px;
+                margin-top: 8px;
+            }
+
+            .walas-modal-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                padding-top: 8px;
+            }
+
+            .walas-modal-cancel {
+                background: rgba(148, 163, 184, 0.18);
+                border: 1px solid rgba(148, 163, 184, 0.40);
+                color: rgba(15, 23, 42, 0.78);
+                border-radius: 12px;
+                padding: 10px 14px;
+                font-weight: 800;
+            }
+
+            .walas-modal-cancel:hover {
+                background: rgba(148, 163, 184, 0.26);
+            }
+
+            .walas-modal-submit {
+                background: #160B6A;
+                color: #ffffff;
+                border-radius: 12px;
+                padding: 10px 14px;
+                font-weight: 900;
+                box-shadow: 0 12px 26px rgba(22, 11, 106, 0.28);
+            }
+
+            .walas-modal-submit:hover {
+                background: #120856;
+            }
+
+            @media (min-width: 768px) {
+                .walas-grid {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+            }
+
+            @media (min-width: 1024px) {
+                .walas-grid {
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                }
+            }
+
+            @media (max-width: 768px) {
+                .walas-section-body {
+                    padding: 18px;
+                }
+
+                .walas-section-header {
+                    padding: 16px 18px;
+                }
+
+                .walas-modal-actions {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+            }
+
+            .exit-create-page-bg {
+                background:
+                    radial-gradient(circle at 10% 10%, rgba(126, 123, 149, 0.14) 0%, rgba(126, 123, 149, 0) 42%),
+                    radial-gradient(circle at 90% 15%, rgba(22, 11, 106, 0.10) 0%, rgba(22, 11, 106, 0) 45%),
+                    #F4F2FF;
+            }
+
+            .exit-create-page-header {
+                background: #160B6A;
+            }
+
+            .exit-create-page-header-subtitle {
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            .exit-create-back-btn {
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.45);
+                color: #ffffff;
+            }
+
+            .exit-create-back-btn:hover {
+                background: rgba(255, 255, 255, 0.20);
+            }
+
+            .exit-create-form-card {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 24px;
+                box-shadow: 0 18px 48px rgba(15, 23, 42, 0.12);
+                overflow: hidden;
+            }
+
+            .exit-create-form-header {
+                background: #160B6A;
+                padding: 44px 28px;
+                text-align: center;
+            }
+
+            .exit-create-form-header-img {
+                width: 100px;
+                height: 100px;
+                display: block;
+                margin: 0 auto 14px;
+            }
+
+            .exit-create-form-header-title {
+                color: #ffffff;
+                font-size: 34px;
+                font-weight: 800;
+                letter-spacing: 0.5px;
+                margin: 0;
+            }
+
+            .exit-create-form-header-subtitle {
+                color: rgba(255, 255, 255, 0.85);
+                font-size: 18px;
+                font-weight: 600;
+                margin-top: 10px;
+            }
+
+            .exit-create-form-body {
+                background: linear-gradient(180deg, #ffffff 0%, #F8FAFC 100%);
+                padding: 32px;
+            }
+
+            .exit-create-submit-btn {
+                background: #22C55E;
+                color: #ffffff;
+                border-radius: 16px;
+                padding: 16px 40px;
+                font-size: 18px;
+                font-weight: 800;
+                box-shadow: 0 14px 28px rgba(34, 197, 94, 0.25);
+                transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            }
+
+            .exit-create-submit-btn:hover {
+                background: #16A34A;
+                transform: translateY(-1px);
+                box-shadow: 0 18px 38px rgba(34, 197, 94, 0.32);
+            }
+
+            @media (max-width: 768px) {
+                .exit-create-form-header {
+                    padding: 34px 20px;
+                }
+
+                .exit-create-page-header-inner {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 14px;
+                }
+
+                .exit-create-page-header-inner .exit-create-back-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .exit-create-form-body {
+                    padding: 20px;
+                }
+
+                .exit-create-form-header-title {
+                    font-size: 28px;
+                }
+
+                .exit-create-form-header-subtitle {
+                    font-size: 16px;
+                }
+
+                .exit-create-submit-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .exit-create-form-actions {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 14px;
+                }
+
+                .exit-create-form-actions a {
+                    justify-content: center;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .exit-create-page-header {
+                    margin-left: -16px;
+                    margin-right: -16px;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+            }
+
             @media (max-width: 1024px) {
                 .exit-permissions-page-hero-inner {
                     gap: 14px;

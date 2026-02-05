@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-gradient-to-r from-green-600 to-teal-600 -mt-6 -mx-6 px-6 py-8 mb-6">
-            <div class="flex justify-between items-center">
+        <div class="exit-create-page-header -mt-6 -mx-6 px-6 py-8 mb-6">
+            <div class="flex justify-between items-center exit-create-page-header-inner">
                 <div>
                     <h2 class="font-bold text-3xl text-white leading-tight drop-shadow-lg flex items-center">
                         <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -9,9 +9,9 @@
                         </svg>
                         Ajukan Izin Keluar
                     </h2>
-                    <p class="text-green-100 mt-2">Isi form untuk mengajukan izin keluar siswa</p>
+                    <p class="exit-create-page-header-subtitle mt-2">Isi form untuk mengajukan izin keluar siswa ini</p>
                 </div>
-                <a href="{{ route('exit-permissions.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
+                <a href="{{ route('exit-permissions.index') }}" class="exit-create-back-btn font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                     </svg>
@@ -21,19 +21,15 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-gradient-to-br from-green-50 via-teal-50 to-blue-50">
+    <div class="py-12 exit-create-page-bg">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-green-200">
-                <div class="bg-gradient-to-r from-green-500 to-teal-500 p-8 text-center">
-                    <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-2xl p-4 inline-block mb-3">
-                        <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="text-3xl font-black text-white drop-shadow-lg">Form Izin Keluar</h3>
-                    <p class="text-green-100 mt-2">Lengkapi semua informasi yang diperlukan</p>
+            <div class="exit-create-form-card">
+                <div class="exit-create-form-header">
+                    <img class="exit-create-form-header-img" src="{{ asset('build/assets/form.png') }}" alt="Form">
+                    <h3 class="exit-create-form-header-title">FORM IZIN KELUAR</h3>
+                    <p class="exit-create-form-header-subtitle">Lengkapi semua yang dibutuhkan</p>
                 </div>
-                <div class="p-8 bg-gradient-to-br from-white to-gray-50">
+                <div class="exit-create-form-body">
                     <form method="POST" action="{{ route('exit-permissions.store') }}" id="exitPermissionForm">
                         @csrf
 
@@ -193,14 +189,14 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <div class="flex items-center justify-between pt-6 border-t-4 border-gray-200">
+                        <div class="flex items-center justify-between pt-6 border-t-4 border-gray-200 exit-create-form-actions">
                             <a href="{{ route('exit-permissions.index') }}" class="text-gray-600 hover:text-gray-900 font-bold text-lg flex items-center group">
                                 <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
                                 Batal
                             </a>
-                            <button type="submit" class="group relative bg-gradient-to-r from-green-500 via-teal-500 to-blue-500 hover:from-green-600 hover:via-teal-600 hover:to-blue-600 text-white font-black py-4 px-10 rounded-2xl text-xl shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center">
+                            <button type="submit" class="exit-create-submit-btn flex items-center">
                                 <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                 </svg>

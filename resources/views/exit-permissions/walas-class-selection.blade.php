@@ -1,73 +1,84 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Exit Permissions - Class Selection') }}
-            </h2>
+        <div class="walas-selection-hero -mt-6 -mx-6 px-6 py-8">
+            <div class="max-w-7xl mx-auto walas-selection-hero-inner">
+                <div class="flex items-start justify-between gap-4">
+                    <div>
+                        <h2 class="font-bold text-3xl md:text-4xl text-white leading-tight">
+                            Pilih Kelas (Walas)
+                        </h2>
+                        <p class="walas-selection-subtitle mt-2 text-sm md:text-base">
+                            Masukkan password untuk mengakses permohonan izin keluar per kelas
+                        </p>
+                    </div>
+                </div>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-8 min-h-screen exit-permissions-bg walas-selection-page">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <!-- Success/Error Messages -->
             @if(session('success'))
-                <div class="mb-6 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
+                <div class="mb-6 walas-alert walas-alert-success">
                     <strong class="font-bold">Success!</strong>
                     <span class="block sm:inline">{{ session('success') }}</span>
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mb-6 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
+                <div class="mb-6 walas-alert walas-alert-error">
                     <strong class="font-bold">Error!</strong>
                     <span class="block sm:inline">{{ session('error') }}</span>
                 </div>
             @endif
 
             <!-- Info Banner -->
-            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <div class="flex items-center">
-                    <svg class="w-5 h-5 text-blue-400 mr-3" fill="currentColor" viewBox="0 0 20 20">
+            <div class="walas-info-card mb-6">
+                <div class="flex items-start">
+                    <svg class="w-5 h-5 mr-3" style="color:#160B6A" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                     </svg>
                     <div>
-                        <h3 class="font-semibold text-blue-800">Shared Walas Account - Class Access Control</h3>
-                        <p class="text-blue-600 text-sm mt-1">
-                            Select a class below to view and manage exit permission requests. Each class requires its unique password for access.
+                        <h3 class="walas-info-title">Akses Kelas Walas (Shared Account)</h3>
+                        <p class="walas-info-text text-sm mt-1">
+                            Pilih kelas di bawah untuk melihat dan mengelola permohonan izin keluar. Setiap kelas memiliki password unik.
                         </p>
                     </div>
                 </div>
             </div>
 
 
+
             <!-- All Classes -->
-            <div class="bg-white rounded-lg shadow-lg">
-                <div class="p-6">
-                    <h3 class="text-lg font-bold text-gray-800 mb-6">
-                        📚 All Classes - Select to Manage Exit Permissions
-                    </h3>
+            <div class="walas-section-card">
+                <div class="walas-section-header">
+                    📚 Daftar Kelas
+                </div>
+                <div class="walas-section-body">
                     
                     @if($classesWithRequests->count() > 0)
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="walas-grid">
                             @foreach($classesWithRequests as $class)
-                                <div class="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow border-gray-200 bg-gray-50">
+                                <div class="walas-class-card">
+                                    <div class="walas-class-card-body">
                                     
                                     <!-- Class Header -->
-                                    <div class="flex justify-between items-start mb-4">
+                                    <div class="flex justify-between items-start mb-4 gap-3">
                                         <div>
-                                            <h4 class="text-lg font-bold text-gray-800">{{ $class->name }}</h4>
-                                            <p class="text-sm text-gray-600">{{ $class->grade }} - {{ $class->major }}</p>
+                                            <h4 class="walas-class-title">{{ $class->name }}</h4>
+                                            <p class="walas-class-meta text-sm mt-1">{{ $class->grade }} - {{ $class->major }}</p>
                                             @if($class->description)
-                                                <p class="text-xs text-gray-500 mt-1">{{ $class->description }}</p>
+                                                <p class="walas-class-desc text-xs mt-2">{{ $class->description }}</p>
                                             @endif
                                         </div>
                                         @if($class->exit_permissions_count > 0)
-                                            <span class="bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                                            <span class="walas-badge walas-badge-pending">
                                                 {{ $class->exit_permissions_count }} Pending
                                             </span>
                                         @else
-                                            <span class="bg-gray-300 text-gray-600 text-xs font-bold px-2 py-1 rounded-full">
+                                            <span class="walas-badge walas-badge-empty">
                                                 No Requests
                                             </span>
                                         @endif
@@ -75,29 +86,30 @@
                                     
                                     <!-- Security Status -->
                                     <div class="mb-4">
-                                        <div class="flex items-center text-blue-600 text-sm font-medium">
-                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <div class="flex items-center walas-security-text">
+                                            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
                                             </svg>
-                                            🔐 Password Required
+                                            🔐 Password Diperlukan
                                         </div>
                                     </div>
                                     
                                     <!-- Action Buttons -->
                                     <div class="flex gap-2">
                                         <button onclick="showPasswordModal({{ $class->id }}, '{{ $class->name }}')" 
-                                                class="flex-1 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm">
+                                                class="flex-1 walas-primary-btn text-sm">
                                             🔐 Access Class
                                         </button>
+                                    </div>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <div class="text-center py-12">
-                            <div class="text-gray-400 text-6xl mb-4">📭</div>
-                            <h4 class="text-xl font-bold text-gray-600 mb-2">No Pending Requests</h4>
-                            <p class="text-gray-500">All exit permission requests have been processed.</p>
+                        <div class="walas-empty">
+                            <div style="font-size:56px; margin-bottom:12px; opacity:0.55">📭</div>
+                            <h4 class="text-xl font-bold" style="color: rgba(17,24,39,0.72); margin-bottom:6px;">No Pending Requests</h4>
+                            <p style="color: rgba(17,24,39,0.55)">All exit permission requests have been processed.</p>
                         </div>
                     @endif
                 </div>
@@ -106,56 +118,43 @@
     </div>
 
     <!-- Password Modal -->
-    <div id="passwordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="bg-white rounded-lg shadow-xl max-w-md w-full p-6">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-bold text-gray-800">🔐 Class Password Required</h3>
-                    <button onclick="hidePasswordModal()" class="text-gray-400 hover:text-gray-600">
+    <div id="passwordModal" class="walas-modal-overlay hidden">
+        <div class="walas-modal-wrap">
+            <div class="walas-modal">
+                <div class="walas-modal-header">
+                    <h3 class="walas-modal-title">🔐 Class Password Required</h3>
+                    <button onclick="hidePasswordModal()" class="walas-modal-close" type="button">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
                     </button>
                 </div>
 
-                <!-- Security Warning -->
-                <div class="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded">
-                    <div class="flex items-center">
-                        <svg class="w-4 h-4 text-yellow-400 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
-                        <span class="text-yellow-700 text-sm font-medium">Enter the password for <span id="modalClassName"></span></span>
+                <div class="walas-modal-body">
+                    <div class="walas-modal-hint">
+                        Enter the password for <span id="modalClassName"></span>
                     </div>
+
+                    <form id="unlockForm" method="POST">
+                        @csrf
+                        <div style="margin-top:14px">
+                            <label for="password" class="walas-modal-label">Class Password</label>
+                            <input type="password"
+                                   id="password"
+                                   name="password"
+                                   class="walas-modal-input"
+                                   placeholder="Enter class password"
+                                   required
+                                   autofocus>
+                            <p class="walas-modal-footnote">Only authorized homeroom teachers should have access to this password.</p>
+                        </div>
+
+                        <div class="walas-modal-actions">
+                            <button type="button" onclick="hidePasswordModal()" class="walas-modal-cancel">Cancel</button>
+                            <button type="submit" class="walas-modal-submit">🔐 Access Class</button>
+                        </div>
+                    </form>
                 </div>
-
-                <form id="unlockForm" method="POST">
-                    @csrf
-                    <div class="mb-4">
-                        <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
-                            Class Password
-                        </label>
-                        <input type="password" 
-                               id="password" 
-                               name="password" 
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                               placeholder="Enter class password"
-                               required
-                               autofocus>
-                        <p class="text-xs text-gray-500 mt-1">Only authorized homeroom teachers should have access to this password.</p>
-                    </div>
-
-                    <div class="flex justify-end gap-3">
-                        <button type="button" 
-                                onclick="hidePasswordModal()"
-                                class="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium">
-                            Cancel
-                        </button>
-                        <button type="submit" 
-                                class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            🔐 Access Class
-                        </button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>
