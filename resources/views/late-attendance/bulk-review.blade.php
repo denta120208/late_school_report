@@ -1,24 +1,24 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="bg-gradient-to-r from-red-600 to-orange-600 -mt-6 -mx-6 px-6 py-8 mb-6">
-            <div class="flex justify-between items-center">
-                <div>
+        <div class="late-attendance-hero -mt-6 -mx-6 px-6 py-8 mb-6 shadow-lg">
+            <div class="max-w-7xl mx-auto late-attendance-hero-inner flex items-center justify-between gap-4 flex-wrap">
+                <div style="flex: 1 1 520px; min-width: 260px;">
                     <h2 class="font-bold text-3xl text-white leading-tight drop-shadow-lg flex items-center">
                         <svg class="w-10 h-10 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
                         </svg>
                         Catat Keterlambatan Siswa
                     </h2>
-                    <p class="text-red-100 mt-2">Isi data keterlambatan untuk setiap siswa yang dipilih</p>
+                    <p class="late-attendance-hero-subtitle mt-2 text-sm">Isi data keterlambatan untuk setiap siswa yang dipilih</p>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button type="button" onclick="addMoreStudents()" class="bg-blue-500 bg-opacity-90 hover:bg-opacity-100 text-white font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
+                <div class="flex items-center gap-3 flex-wrap" style="flex: 0 0 auto; justify-content: flex-end; margin-left: auto;">
+                    <button type="button" onclick="addMoreStudents()" class="late-attendance-primary-btn flex items-center justify-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         Tambah Siswa Lain
                     </button>
-                    <a href="{{ route('classes.index') }}" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-3 px-6 rounded-xl transition duration-300 flex items-center backdrop-blur-sm">
+                    <a href="{{ route('classes.index') }}" class="late-attendance-secondary-btn-nohover flex items-center justify-center">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -29,20 +29,22 @@
         </div>
     </x-slot>
 
-    <div class="py-12 bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50">
+    <div class="py-8 min-h-screen late-attendance-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             
             <!-- Info Alert -->
-            <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-3xl shadow-2xl p-6 mb-8 text-white">
-                <div class="flex items-center">
-                    <div class="bg-white bg-opacity-30 rounded-full p-4 mr-4">
-                        <svg class="h-8 w-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+            <div class="late-attendance-card mb-6">
+                <div class="late-attendance-card-body">
+                    <div class="flex items-center">
+                        <div class="rounded-full p-4 mr-4" style="background: rgba(22, 11, 106, 0.10);">
+                            <svg class="h-8 w-8" fill="#160B6A" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
                         </svg>
-                    </div>
-                    <div>
-                        <p class="text-xl font-bold">ℹ️ Isi Data Individual</p>
-                        <p class="text-blue-100 mt-1">Setiap siswa memiliki form sendiri. Isi waktu kedatangan dan alasan untuk masing-masing siswa.</p>
+                        </div>
+                        <div>
+                            <p class="text-xl font-bold" style="color:#160B6A;">Isi Data Individual</p>
+                            <p class="text-slate-600 mt-1">Setiap siswa memiliki form sendiri. Isi waktu kedatangan dan alasan untuk masing-masing siswa.</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -51,28 +53,30 @@
                 @csrf
 
                 <!-- Class Info Header -->
-                <div class="bg-white rounded-3xl shadow-2xl p-6 mb-8">
-                    <div class="flex items-center">
-                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-4 mr-4">
-                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </div>
-                        <div>
-                            <p class="text-sm text-gray-600">Kelas</p>
-                            <p class="text-2xl font-bold text-gray-900">
-                                @if($classes->count() == 1)
-                                    {{ $classes->first()->name }}
-                                @else
-                                    {{ $classes->count() }} Kelas Berbeda
-                                @endif
-                            </p>
-                            @if($classes->count() > 1)
-                                <p class="text-sm text-gray-500 mt-1">{{ $classes->pluck('name')->join(', ') }}</p>
-                            @endif
-                        </div>
-                        <div class="ml-auto">
-                            <span class="bg-gradient-to-r from-red-500 to-pink-500 text-white px-6 py-3 rounded-xl font-bold text-lg">
+                <div class="late-attendance-card mb-6">
+                    <div class="late-attendance-card-body">
+                        <div class="flex items-center justify-between gap-4 flex-wrap">
+                            <div class="flex items-center gap-4">
+                                <div class="rounded-2xl p-4" style="background: rgba(22, 11, 106, 0.10);">
+                                    <svg class="w-8 h-8" fill="none" stroke="#160B6A" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-sm text-gray-600">Kelas</p>
+                                    <p class="text-2xl font-bold text-gray-900">
+                                        @if($classes->count() == 1)
+                                            {{ $classes->first()->name }}
+                                        @else
+                                            {{ $classes->count() }} Kelas Berbeda
+                                        @endif
+                                    </p>
+                                    @if($classes->count() > 1)
+                                        <p class="text-sm text-gray-500 mt-1">{{ $classes->pluck('name')->join(', ') }}</p>
+                                    @endif
+                                </div>
+                            </div>
+                            <span class="px-6 py-3 rounded-xl font-bold text-lg" style="background:#160B6A; color:#fff; white-space:nowrap;">
                                 {{ count($students) }} Siswa Terpilih
                             </span>
                         </div>
@@ -94,22 +98,22 @@
                             }
                         }
                     @endphp
-                    <div class="bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-red-200 student-form-card" data-student-id="{{ $student->id }}">
-                        <div class="bg-gradient-to-r from-red-500 to-pink-500 p-6">
+                    <div class="late-attendance-card student-form-card" data-student-id="{{ $student->id }}">
+                        <div class="late-attendance-card-header p-6">
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-4">
-                                    <div class="bg-white bg-opacity-30 rounded-2xl p-3 backdrop-blur-lg">
-                                        <div class="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl p-3 w-14 h-14 flex items-center justify-center">
+                                    <div class="bg-white bg-opacity-20 rounded-2xl p-3 backdrop-blur-lg">
+                                        <div class="rounded-xl p-3 w-14 h-14 flex items-center justify-center" style="background: rgba(255,255,255,0.22);">
                                             <span class="text-2xl font-black text-white">{{ strtoupper(substr($student->name, 0, 1)) }}</span>
                                         </div>
                                     </div>
                                     <div class="text-white">
-                                        <p class="text-sm text-red-100">Siswa #{{ $index + 1 }}</p>
+                                        <p class="text-sm" style="color: rgba(255,255,255,0.85);">Siswa #{{ $index + 1 }}</p>
                                         <h3 class="text-2xl font-bold">{{ $student->name }}</h3>
-                                        <p class="text-red-100">{{ $student->student_number }} • {{ $student->schoolClass->name }}</p>
+                                        <p style="color: rgba(255,255,255,0.85);">{{ $student->student_number }} • {{ $student->schoolClass->name }}</p>
                                     </div>
                                 </div>
-                                <button type="button" onclick="removeStudentForm({{ $student->id }})" class="bg-white bg-opacity-20 hover:bg-opacity-30 text-white font-bold py-2 px-4 rounded-xl transition duration-300 flex items-center">
+                                <button type="button" onclick="removeStudentForm({{ $student->id }})" class="bg-white bg-opacity-20 text-white font-bold py-2 px-4 rounded-xl transition duration-300 flex items-center">
                                     <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                     </svg>
@@ -118,45 +122,45 @@
                             </div>
                         </div>
 
-                        <div class="p-8 bg-gradient-to-br from-white to-gray-50">
+                        <div class="p-8 bg-white">
                             <input type="hidden" name="students[{{ $index }}][student_id]" value="{{ $student->id }}">
                             <input type="hidden" name="students[{{ $index }}][class_id]" value="{{ $student->class_id }}">
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Late Date -->
                                 <div>
-                                    <label class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
-                                        <svg class="w-5 h-5 mr-2 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-sm mb-2 late-attendance-label flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="#160B6A" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                         </svg>
                                         Tanggal Telat <span class="text-red-500">*</span>
                                     </label>
                                     <input type="date" name="students[{{ $index }}][late_date]" value="{{ old('students.'.$index.'.late_date', $existingData['late_date'] ?? date('Y-m-d')) }}" required
-                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-red-500 focus:ring-2 focus:ring-red-200 transition duration-300">
+                                        class="late-attendance-input">
                                 </div>
 
                                 <!-- Arrival Time -->
                                 <div>
-                                    <label class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
-                                        <svg class="w-5 h-5 mr-2 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-sm mb-2 late-attendance-label flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="#160B6A" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         Jam Kedatangan <span class="text-red-500">*</span>
                                     </label>
                                     <input type="time" name="students[{{ $index }}][arrival_time]" value="{{ old('students.'.$index.'.arrival_time', $existingData['arrival_time'] ?? '') }}" required
-                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-orange-500 focus:ring-2 focus:ring-orange-200 transition duration-300">
+                                        class="late-attendance-input">
                                 </div>
 
                                 <!-- Late Reason -->
                                 <div class="md:col-span-2">
-                                    <label class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
-                                        <svg class="w-5 h-5 mr-2 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-sm mb-2 late-attendance-label flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="#160B6A" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path>
                                         </svg>
                                         Alasan Telat <span class="text-red-500">*</span>
                                     </label>
                                     <select name="students[{{ $index }}][late_reason_id]" required
-                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-yellow-500 focus:ring-2 focus:ring-yellow-200 transition duration-300 cursor-pointer">
+                                        class="late-attendance-input cursor-pointer">
                                         <option value="">-- Pilih Alasan --</option>
                                         @foreach($lateReasons as $reason)
                                             <option value="{{ $reason->id }}" {{ (old('students.'.$index.'.late_reason_id', $existingData['late_reason_id'] ?? '') == $reason->id) ? 'selected' : '' }}>
@@ -168,14 +172,14 @@
 
                                 <!-- Notes -->
                                 <div class="md:col-span-2">
-                                    <label class="block text-gray-800 text-sm font-bold mb-2 flex items-center">
-                                        <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <label class="block text-sm mb-2 late-attendance-label flex items-center">
+                                        <svg class="w-5 h-5 mr-2" fill="none" stroke="#160B6A" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
                                         Catatan Tambahan <span class="text-gray-400">(Opsional)</span>
                                     </label>
                                     <textarea name="students[{{ $index }}][notes]" rows="2" placeholder="Tambahkan catatan jika ada..."
-                                        class="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-300">{{ old('students.'.$index.'.notes', $existingData['notes'] ?? '') }}</textarea>
+                                        class="late-attendance-input">{{ old('students.'.$index.'.notes', $existingData['notes'] ?? '') }}</textarea>
                                 </div>
                             </div>
                         </div>
@@ -184,32 +188,34 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div class="mt-8 bg-white rounded-3xl shadow-2xl p-8">
-                    <div class="flex items-center justify-between">
+                <div class="mt-8 late-attendance-card">
+                    <div class="late-attendance-card-body">
+                    <div class="flex items-center justify-between gap-4 flex-wrap">
                         <div>
                             <p class="text-gray-600">Total siswa yang akan dicatat:</p>
                             <p class="text-3xl font-bold text-gray-900" id="totalStudents">{{ count($students) }}</p>
                         </div>
-                        <div class="flex items-center space-x-4">
-                            <button type="button" onclick="addMoreStudents()" class="text-blue-600 hover:text-blue-800 font-bold text-lg flex items-center group px-6 py-4">
-                                <svg class="w-5 h-5 mr-2 transform group-hover:scale-110 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center gap-3 flex-wrap" style="flex: 0 0 auto; justify-content: flex-end; margin-left: auto;">
+                            <button type="button" onclick="addMoreStudents()" class="late-attendance-secondary-btn flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Tambah Siswa Lagi
                             </button>
-                            <a href="{{ route('classes.index') }}" class="text-gray-600 hover:text-gray-900 font-bold text-lg flex items-center group px-6 py-4">
-                                <svg class="w-5 h-5 mr-2 transform group-hover:-translate-x-2 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <a href="{{ route('classes.index') }}" class="late-attendance-secondary-btn-nohover flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
                                 Batal
                             </a>
-                            <button type="submit" class="group relative bg-gradient-to-r from-red-500 via-pink-500 to-purple-500 hover:from-red-600 hover:via-pink-600 hover:to-purple-600 text-white font-black py-4 px-10 rounded-2xl text-xl shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center">
-                                <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <button type="submit" class="late-attendance-primary-btn flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
                                 </svg>
                                 <span>Simpan Semua</span>
                             </button>
                         </div>
+                    </div>
                     </div>
                 </div>
             </form>

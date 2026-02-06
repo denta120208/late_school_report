@@ -17,6 +17,8 @@ class LateAttendance extends Model
         'status',
         'telegram_sent',
         'telegram_sent_at',
+        'whatsapp_sent',
+        'whatsapp_sent_at',
     ];
 
     protected $casts = [
@@ -24,6 +26,8 @@ class LateAttendance extends Model
         'arrival_time' => 'datetime',
         'telegram_sent' => 'boolean',
         'telegram_sent_at' => 'datetime',
+        'whatsapp_sent' => 'boolean',
+        'whatsapp_sent_at' => 'datetime',
     ];
 
     // Relationships

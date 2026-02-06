@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'wapisender' => [
+        'api_key' => env('WAPISENDER_API_KEY'),
+        'device_key' => env('WAPISENDER_DEVICE_KEY'),
+        'base_url' => env('WAPISENDER_BASE_URL', 'https://wapisender.id'),
+    ],
+
 ];

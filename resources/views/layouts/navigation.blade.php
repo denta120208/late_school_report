@@ -32,6 +32,15 @@
                         </svg>
                         Catat Telat
                     </x-nav-link>
+
+                    @if(Auth::user()->isAdmin() || Auth::user()->isTeacher())
+                        <x-nav-link :href="route('student-absences.create')" :active="request()->routeIs('student-absences.*')" class="!text-white hover:!bg-white hover:!bg-opacity-20 !border-transparent hover:!border-white">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3M9 20H7a2 2 0 01-2-2V6a2 2 0 012-2h7a2 2 0 012 2v7"></path>
+                            </svg>
+                            Input Ketidakhadiran
+                        </x-nav-link>
+                    @endif
                     <!-- Late Attendance Dropdown -->
                     <div class="relative group" x-data="{ open: false }">
                         <button @click="open = !open" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white hover:bg-white hover:bg-opacity-20 focus:outline-none transition ease-in-out duration-150">
@@ -124,6 +133,12 @@
             <a href="{{ route('classes.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('classes.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Catat Siswa Telat') }}
             </a>
+
+            @if(Auth::user()->isAdmin() || Auth::user()->isTeacher())
+                <a href="{{ route('student-absences.create') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('student-absences.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
+                    {{ __('Input Ketidakhadiran') }}
+                </a>
+            @endif
             <div class="border-t border-white/10 my-2"></div>
             <div class="px-4 py-2 text-xs font-semibold text-blue-200 uppercase tracking-wider">
                 Laporan

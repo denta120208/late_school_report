@@ -1,35 +1,42 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Late Attendance Reports
-        </h2>
+        <div class="late-attendance-hero -mt-6 -mx-6 px-6 py-8 mb-6 shadow-lg">
+            <div class="max-w-7xl mx-auto late-attendance-hero-inner">
+                <h2 class="font-bold text-3xl md:text-4xl text-white leading-tight">
+                    Laporan Keterlambatan Kehadiran
+                </h2>
+                <p class="late-attendance-hero-subtitle mt-2 text-sm md:text-base">
+                    Pantau dan kelola catatan keterlambatan siswa
+                </p>
+            </div>
+        </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="py-8 min-h-screen late-attendance-bg">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if(session('success'))
-            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative">
-                {{ session('success') }}
-            </div>
+                <div class="mb-4 walas-alert walas-alert-success">
+                    {{ session('success') }}
+                </div>
             @endif
 
             <!-- Filters -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-6">
-                <div class="p-6">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Filters</h3>
-                    <form method="GET" action="{{ route('late-attendance.index') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="late-attendance-card mb-6">
+                <div class="late-attendance-card-body">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Filters</h3>
+                    <form method="GET" action="{{ route('late-attendance.index') }}" class="late-attendance-filters-grid">
                         <!-- Search -->
                         <div>
-                            <label for="search" class="block text-sm font-medium text-gray-700 mb-1">Search Student</label>
+                            <label for="search" class="block text-sm mb-2 late-attendance-label">Siswa</label>
                             <input type="text" name="search" id="search" value="{{ request('search') }}" 
                                 placeholder="Student name..." 
-                                class="shadow-sm border rounded w-full py-2 px-3 text-gray-700">
+                                class="late-attendance-input text-sm">
                         </div>
 
                         <!-- Class Filter -->
                         <div>
-                            <label for="class_id" class="block text-sm font-medium text-gray-700 mb-1">Class</label>
-                            <select name="class_id" id="class_id" class="shadow-sm border rounded w-full py-2 px-3 text-gray-700">
+                            <label for="class_id" class="block text-sm mb-2 late-attendance-label">Kelas</label>
+                            <select name="class_id" id="class_id" class="late-attendance-input text-sm">
                                 <option value="">All Classes</option>
                                 @foreach($classes as $class)
                                     <option value="{{ $class->id }}" {{ request('class_id') == $class->id ? 'selected' : '' }}>
@@ -41,17 +48,17 @@
 
                         <!-- Date Filter -->
                         <div>
-                            <label for="date" class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                            <label for="date" class="block text-sm mb-2 late-attendance-label">Tanggal</label>
                             <input type="date" name="date" id="date" value="{{ request('date') }}" 
-                                class="shadow-sm border rounded w-full py-2 px-3 text-gray-700">
+                                class="late-attendance-input text-sm">
                         </div>
 
                         <!-- Buttons -->
-                        <div class="md:col-span-3 flex gap-2">
-                            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        <div class="late-attendance-filter-actions">
+                            <button type="submit" class="late-attendance-primary-btn">
                                 Apply Filters
                             </button>
-                            <a href="{{ route('late-attendance.index') }}" class="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded">
+                            <a href="{{ route('late-attendance.index') }}" class="late-attendance-secondary-btn">
                                 Clear Filters
                             </a>
                         </div>
@@ -60,26 +67,20 @@
             </div>
 
             <!-- Results Table -->
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Late Attendance Records</h3>
-                        <div class="flex items-center gap-3">
-                            <a href="{{ route('late-attendance.multi-create') }}" class="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-bold py-2 px-6 rounded-lg shadow-lg transform hover:scale-105 transition-all duration-300 flex items-center">
-                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
-                                </svg>
-                                Catat Multi-Siswa
-                            </a>
-                            <div class="text-sm text-gray-600">
-                                Total: {{ $lateAttendances->total() }} records
-                            </div>
-                        </div>
+            <div class="late-attendance-card">
+                <div class="late-attendance-card-header">
+                    <div class="flex items-center justify-between late-attendance-toolbar">
+                        <h3 class="late-attendance-card-title text-base md:text-lg">
+                            CATATAN KEHADIRAN TERLAMBAT
+                        </h3>
                     </div>
+                </div>
+
+                <div class="late-attendance-card-body">
                     
                     <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                        <table class="late-attendance-table">
+                            <thead>
                                 <tr>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
@@ -89,12 +90,12 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Recorded By</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="divide-y divide-gray-100">
                                 @forelse($lateAttendances as $attendance)
-                                <tr>
+                                <tr class="late-attendance-table-row">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $attendance->late_date->format('d M Y') }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                        <a href="{{ route('students.show', $attendance->student_id) }}" class="text-blue-600 hover:text-blue-900">
+                                        <a href="{{ route('students.show', $attendance->student_id) }}" class="late-attendance-link">
                                             {{ $attendance->student->name }}
                                         </a>
                                     </td>
@@ -152,7 +153,7 @@
 
         // Buat indicator elemen
         document.addEventListener('DOMContentLoaded', function() {
-            const header = document.querySelector('.max-w-7xl .flex.justify-between');
+            const header = document.querySelector('.late-attendance-toolbar');
             if (header) {
                 const indicator = document.createElement('div');
                 indicator.id = 'refresh-indicator';

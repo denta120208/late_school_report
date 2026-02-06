@@ -88,6 +88,421 @@
                     #F4F2FF;
             }
 
+            .late-attendance-bg {
+                background:
+                    radial-gradient(circle at 12% 12%, rgba(126, 123, 149, 0.14) 0%, rgba(126, 123, 149, 0) 42%),
+                    radial-gradient(circle at 90% 14%, rgba(22, 11, 106, 0.10) 0%, rgba(22, 11, 106, 0) 45%),
+                    #F4F2FF;
+            }
+
+            .late-attendance-hero {
+                background: #160B6A;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .late-attendance-hero::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background:
+                    radial-gradient(circle at 86% 22%, rgba(126, 123, 149, 0.34) 0%, rgba(126, 123, 149, 0) 44%),
+                    radial-gradient(circle at 12% 18%, rgba(255, 255, 255, 0.10) 0%, rgba(255, 255, 255, 0) 38%);
+                pointer-events: none;
+            }
+
+            .late-attendance-hero-inner {
+                position: relative;
+                z-index: 1;
+            }
+
+            .late-attendance-hero-subtitle {
+                color: rgba(255, 255, 255, 0.85);
+            }
+
+            .late-attendance-card {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 16px;
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+                overflow: hidden;
+            }
+
+            .late-attendance-card-header {
+                background: #160B6A;
+                padding: 16px 24px;
+            }
+
+            .late-attendance-card-title {
+                color: #ffffff;
+                font-weight: 900;
+            }
+
+            .late-attendance-card-body {
+                padding: 24px;
+            }
+
+            .late-attendance-filters-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 16px;
+                align-items: end;
+            }
+
+            .late-attendance-filter-actions {
+                grid-column: 1 / -1;
+                display: flex;
+                gap: 10px;
+                align-items: center;
+                flex-wrap: wrap;
+            }
+
+            .late-attendance-toolbar-right {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+            .late-attendance-toolbar-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .late-attendance-label {
+                color: rgba(17, 24, 39, 0.78);
+                font-weight: 700;
+            }
+
+            .late-attendance-input {
+                width: 100%;
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.20);
+                border-radius: 12px;
+                color: #111827;
+                padding: 10px 12px;
+            }
+
+            .late-attendance-input:focus {
+                outline: none;
+                border-color: rgba(22, 11, 106, 0.65);
+                box-shadow: 0 0 0 3px rgba(22, 11, 106, 0.16);
+            }
+
+            .late-attendance-primary-btn {
+                background: #160B6A;
+                color: #ffffff;
+                border-radius: 12px;
+                padding: 12px 18px;
+                font-weight: 800;
+                box-shadow: 0 12px 24px rgba(22, 11, 106, 0.22);
+            }
+
+            .late-attendance-primary-btn:hover {
+                background: #120856;
+            }
+
+            .late-attendance-secondary-btn {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.25);
+                color: #160B6A;
+                border-radius: 12px;
+                padding: 12px 18px;
+                font-weight: 800;
+            }
+
+            .late-attendance-secondary-btn:hover {
+                background: rgba(22, 11, 106, 0.04);
+            }
+
+            .late-attendance-secondary-btn-nohover {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.25);
+                color: #160B6A;
+                border-radius: 12px;
+                padding: 12px 18px;
+                font-weight: 800;
+            }
+
+            .late-attendance-table {
+                width: 100%;
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 14px;
+                overflow: hidden;
+            }
+
+            .late-attendance-table thead {
+                background: rgba(22, 11, 106, 0.06);
+            }
+
+            .late-attendance-table th {
+                color: rgba(17, 24, 39, 0.66);
+                font-weight: 900;
+                letter-spacing: 0.06em;
+                font-size: 11px;
+                text-transform: uppercase;
+            }
+
+            .late-attendance-table-row:hover {
+                background: rgba(22, 11, 106, 0.04);
+            }
+
+            .late-attendance-link {
+                color: rgba(17, 24, 39, 0.82);
+                font-weight: 700;
+            }
+
+            .late-attendance-link:hover {
+                color: rgba(17, 24, 39, 0.92);
+            }
+
+            .class-show-bg {
+                background:
+                    radial-gradient(circle at 12% 12%, rgba(126, 123, 149, 0.14) 0%, rgba(126, 123, 149, 0) 42%),
+                    radial-gradient(circle at 90% 14%, rgba(22, 11, 106, 0.10) 0%, rgba(22, 11, 106, 0) 45%),
+                    #F4F2FF;
+            }
+
+            .class-show-header {
+                background: #ffffff;
+                border-bottom: 1px solid rgba(15, 23, 42, 0.10);
+            }
+
+            .class-show-header-inner {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 16px;
+                padding: 20px 24px;
+            }
+
+            .class-show-title {
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .class-show-title h2 {
+                font-weight: 900;
+                font-size: 22px;
+                color: #0f172a;
+                line-height: 1.15;
+            }
+
+            .class-show-subtitle {
+                color: rgba(15, 23, 42, 0.62);
+                font-weight: 600;
+                font-size: 12px;
+                margin-top: 2px;
+            }
+
+            .class-show-back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.30);
+                color: #160B6A;
+                border-radius: 9999px;
+                padding: 10px 14px;
+                font-weight: 800;
+            }
+
+            .class-show-back-btn:hover {
+                background: rgba(22, 11, 106, 0.04);
+            }
+
+            .class-show-card {
+                background: #ffffff;
+                border: 1px solid rgba(22, 11, 106, 0.12);
+                border-radius: 16px;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+                overflow: hidden;
+            }
+
+            .class-show-card-header {
+                background: #160B6A;
+                padding: 14px 18px;
+                color: #ffffff;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .class-show-card-header-title {
+                font-weight: 900;
+                letter-spacing: 0.01em;
+            }
+
+            .class-show-card-header-subtitle {
+                color: rgba(255, 255, 255, 0.86);
+                font-weight: 600;
+                font-size: 12px;
+                margin-top: 2px;
+            }
+
+            .class-show-submit-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: rgba(255, 255, 255, 0.15);
+                border: 1px solid rgba(255, 255, 255, 0.32);
+                color: #ffffff;
+                padding: 10px 12px;
+                border-radius: 12px;
+                font-weight: 800;
+                white-space: nowrap;
+            }
+
+            .class-show-submit-btn:hover {
+                background: rgba(255, 255, 255, 0.22);
+            }
+
+            .class-show-student-row {
+                background: #ffffff;
+                border: 1px solid rgba(15, 23, 42, 0.10);
+                border-radius: 14px;
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+                padding: 14px 16px;
+            }
+
+            .class-show-student-row:hover {
+                box-shadow: 0 10px 28px rgba(15, 23, 42, 0.10);
+            }
+
+            .class-show-checkbox {
+                width: 18px;
+                height: 18px;
+                border-radius: 6px;
+                border: 1px solid rgba(15, 23, 42, 0.22);
+                accent-color: #160B6A;
+                cursor: pointer;
+            }
+
+            .class-show-avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 12px;
+                background: #160B6A;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #ffffff;
+                font-weight: 900;
+            }
+
+            .class-show-student-name {
+                font-weight: 900;
+                color: #0f172a;
+                font-size: 14px;
+            }
+
+            .class-show-student-meta {
+                color: rgba(15, 23, 42, 0.62);
+                font-weight: 600;
+                font-size: 12px;
+                display: flex;
+                gap: 14px;
+                flex-wrap: wrap;
+                margin-top: 2px;
+            }
+
+            .class-show-action-primary {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #160B6A;
+                color: #ffffff;
+                border-radius: 12px;
+                padding: 10px 12px;
+                font-weight: 900;
+                box-shadow: 0 10px 20px rgba(22, 11, 106, 0.22);
+            }
+
+            .class-show-action-primary:hover {
+                background: #120856;
+            }
+
+            .class-show-action-secondary {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                background: #ffffff;
+                border: 1px solid rgba(15, 23, 42, 0.16);
+                color: rgba(15, 23, 42, 0.82);
+                border-radius: 12px;
+                padding: 10px 12px;
+                font-weight: 900;
+            }
+
+            .class-show-action-secondary:hover {
+                background: rgba(15, 23, 42, 0.04);
+            }
+
+            @media (max-width: 768px) {
+                .class-show-header-inner {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .class-show-card-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .late-attendance-card-body {
+                    padding: 18px;
+                }
+
+                .late-attendance-card-header {
+                    padding: 14px 18px;
+                }
+
+                .late-attendance-primary-btn,
+                .late-attendance-secondary-btn {
+                    width: 100%;
+                    justify-content: center;
+                }
+
+                .late-attendance-filters-grid {
+                    grid-template-columns: 1fr;
+                }
+
+                .late-attendance-filter-actions {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .late-attendance-toolbar {
+                    flex-direction: column;
+                    align-items: stretch;
+                    gap: 12px;
+                }
+
+                .late-attendance-toolbar-right {
+                    flex-direction: column;
+                    align-items: stretch;
+                }
+
+                .late-attendance-table th,
+                .late-attendance-table td {
+                    padding: 12px 14px !important;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .late-attendance-hero {
+                    margin-left: -16px;
+                    margin-right: -16px;
+                    padding-left: 16px;
+                    padding-right: 16px;
+                }
+            }
+
             .exit-permissions-card {
                 background: #ffffff;
                 border: 1px solid rgba(22, 11, 106, 0.12);

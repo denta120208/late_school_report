@@ -38,6 +38,7 @@ class LateAttendanceController extends Controller
         $validated['status'] = 'pending';
         
         $telegramService = new \App\Services\TelegramService();
+        $whatsappService = new \App\Services\WhatsAppService();
         
         try {
             // Use transaction to ensure data consistency
@@ -46,10 +47,10 @@ class LateAttendanceController extends Controller
             // Create late attendance record
             $record = \App\Models\LateAttendance::create($validated);
             
-            // Commit transaction first - only send Telegram if DB save succeeds
+            // Commit transaction first - only send notifications if DB save succeeds
             \DB::commit();
             
-            // Load relationships for Telegram notification
+            // Load relationships for notifications
             $recordWithRelations = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
                 ->find($record->id);
             
@@ -69,8 +70,24 @@ class LateAttendanceController extends Controller
                 \Log::error('Telegram notification failed for single late attendance: ' . $e->getMessage());
             }
             
+            // Send automatic WhatsApp notification to parent
+            try {
+                $whatsappSent = $whatsappService->sendLateNotificationToParent($recordWithRelations);
+                
+                // Update whatsapp_sent status
+                if ($whatsappSent) {
+                    $record->update([
+                        'whatsapp_sent' => true,
+                        'whatsapp_sent_at' => now(),
+                    ]);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't fail the request - record is already saved
+                \Log::error('WhatsApp notification failed for single late attendance: ' . $e->getMessage());
+            }
+            
             return redirect()->route('classes.show', $validated['class_id'])
-                ->with('success', 'Keterlambatan berhasil dicatat. Notifikasi Telegram dikirim otomatis.');
+                ->with('success', 'Keterlambatan berhasil dicatat. Notifikasi Telegram dan WhatsApp dikirim otomatis ke orang tua.');
                 
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -184,6 +201,7 @@ class LateAttendanceController extends Controller
         
         $createdRecords = [];
         $telegramService = new \App\Services\TelegramService();
+        $whatsappService = new \App\Services\WhatsAppService();
         
         try {
             // Use transaction to ensure data consistency
@@ -207,10 +225,10 @@ class LateAttendanceController extends Controller
                 $createdRecords[] = $record;
             }
             
-            // Commit transaction first - only send Telegram if DB save succeeds
+            // Commit transaction first - only send notifications if DB save succeeds
             \DB::commit();
             
-            // Load relationships for Telegram notification
+            // Load relationships for notifications
             $recordsWithRelations = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
                 ->whereIn('id', collect($createdRecords)->pluck('id'))
                 ->get();
@@ -232,10 +250,27 @@ class LateAttendanceController extends Controller
                 \Log::error('Telegram notification failed for multi late attendance: ' . $e->getMessage());
             }
             
+            // Send automatic WhatsApp notifications to parents
+            try {
+                $whatsappSent = $whatsappService->sendBulkLateNotificationToParents($recordsWithRelations);
+                
+                // Update whatsapp_sent status for all records
+                if ($whatsappSent) {
+                    \App\Models\LateAttendance::whereIn('id', collect($createdRecords)->pluck('id'))
+                        ->update([
+                            'whatsapp_sent' => true,
+                            'whatsapp_sent_at' => now(),
+                        ]);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't fail the request - records are already saved
+                \Log::error('WhatsApp notification failed for multi late attendance: ' . $e->getMessage());
+            }
+            
             $studentCount = count($createdRecords);
             
             return redirect()->route('late-attendance.index')
-                ->with('success', "Berhasil mencatat keterlambatan untuk {$studentCount} siswa. Notifikasi Telegram dikirim otomatis.");
+                ->with('success', "Berhasil mencatat keterlambatan untuk {$studentCount} siswa. Notifikasi Telegram dan WhatsApp dikirim otomatis ke orang tua.");
                 
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -327,6 +362,7 @@ class LateAttendanceController extends Controller
         
         $createdRecords = [];
         $telegramService = new \App\Services\TelegramService();
+        $whatsappService = new \App\Services\WhatsAppService();
         
         try {
             // Use transaction to ensure data consistency
@@ -348,10 +384,10 @@ class LateAttendanceController extends Controller
                 $createdRecords[] = $record;
             }
             
-            // Commit transaction first - only send Telegram if DB save succeeds
+            // Commit transaction first - only send notifications if DB save succeeds
             \DB::commit();
             
-            // Load relationships for Telegram notification
+            // Load relationships for notifications
             $recordsWithRelations = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
                 ->whereIn('id', collect($createdRecords)->pluck('id'))
                 ->get();
@@ -373,11 +409,28 @@ class LateAttendanceController extends Controller
                 \Log::error('Telegram notification failed for bulk late attendance: ' . $e->getMessage());
             }
             
+            // Send automatic WhatsApp notifications to parents
+            try {
+                $whatsappSent = $whatsappService->sendBulkLateNotificationToParents($recordsWithRelations);
+                
+                // Update whatsapp_sent status for all records
+                if ($whatsappSent) {
+                    \App\Models\LateAttendance::whereIn('id', collect($createdRecords)->pluck('id'))
+                        ->update([
+                            'whatsapp_sent' => true,
+                            'whatsapp_sent_at' => now(),
+                        ]);
+                }
+            } catch (\Exception $e) {
+                // Log error but don't fail the request - records are already saved
+                \Log::error('WhatsApp notification failed for bulk late attendance: ' . $e->getMessage());
+            }
+            
             $studentCount = count($createdRecords);
             
             // Redirect to classes index instead of specific class (since students may be from multiple classes)
             return redirect()->route('classes.index')
-                ->with('success', "Berhasil mencatat keterlambatan untuk {$studentCount} siswa. Notifikasi Telegram dikirim otomatis.");
+                ->with('success', "Berhasil mencatat keterlambatan untuk {$studentCount} siswa. Notifikasi Telegram dan WhatsApp dikirim otomatis ke orang tua.");
                 
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -434,6 +487,40 @@ class LateAttendanceController extends Controller
         // Get the data
         $lateAttendances = $query->orderBy('arrival_time')->get();
 
+        // Student absences (S/I/A)
+        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy'])
+            ->byDate($date);
+
+        if (auth()->user()->isHomeroomTeacher()) {
+            $studentAbsencesQuery->where('class_id', auth()->user()->assigned_class_id);
+        }
+
+        if ($classId) {
+            $studentAbsencesQuery->where('class_id', $classId);
+        }
+
+        if ($search) {
+            $studentAbsencesQuery->whereHas('student', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        $studentAbsences = $studentAbsencesQuery->orderBy('class_id')->get();
+
+        $totalAbsentStudents = $studentAbsences->count();
+        $absentPerClass = $studentAbsences->groupBy('class_id')->map->count();
+        $absentByStatus = $studentAbsences->groupBy('status')->map->count();
+        $groupedAbsences = $studentAbsences->groupBy('schoolClass.name');
+
+        $teacherAbsences = \App\Models\TeacherAbsence::byDate($date)->orderBy('teacher_name')->get();
+
+        $picketTeachers = collect()
+            ->merge($lateAttendances->pluck('recordedBy.name'))
+            ->merge($studentAbsences->pluck('recordedBy.name'))
+            ->filter()
+            ->unique()
+            ->values();
+
         // Calculate summary statistics
         $totalLateStudents = $lateAttendances->count();
         $latePerClass = $lateAttendances->groupBy('class_id')->map->count();
@@ -459,6 +546,13 @@ class LateAttendanceController extends Controller
             'mostCommonTimeRange',
             'totalExcused',
             'monthlyStats',
+            'studentAbsences',
+            'groupedAbsences',
+            'totalAbsentStudents',
+            'absentPerClass',
+            'absentByStatus',
+            'teacherAbsences',
+            'picketTeachers',
             'classes',
             'date',
             'classId',
@@ -476,6 +570,7 @@ class LateAttendanceController extends Controller
         $date = $request->get('date', Carbon::today()->format('Y-m-d'));
         $classId = $request->get('class_id');
         $type = $request->get('type', 'daily'); // daily, class, detailed
+        $search = $request->get('search');
 
         // Build the query
         $query = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
@@ -492,6 +587,39 @@ class LateAttendanceController extends Controller
 
         $lateAttendances = $query->orderBy('arrival_time')->get();
 
+        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy'])
+            ->byDate($date);
+
+        if (auth()->user()->isHomeroomTeacher()) {
+            $studentAbsencesQuery->where('class_id', auth()->user()->assigned_class_id);
+        }
+
+        if ($classId) {
+            $studentAbsencesQuery->where('class_id', $classId);
+        }
+
+        if ($search) {
+            $studentAbsencesQuery->whereHas('student', function ($q) use ($search) {
+                $q->where('name', 'like', '%' . $search . '%');
+            });
+        }
+
+        $studentAbsences = $studentAbsencesQuery->orderBy('class_id')->get();
+
+        $totalAbsentStudents = $studentAbsences->count();
+        $absentPerClass = $studentAbsences->groupBy('class_id')->map->count();
+        $absentByStatus = $studentAbsences->groupBy('status')->map->count();
+        $groupedAbsences = $studentAbsences->groupBy('schoolClass.name');
+
+        $teacherAbsences = \App\Models\TeacherAbsence::byDate($date)->orderBy('teacher_name')->get();
+
+        $picketTeachers = collect()
+            ->merge($lateAttendances->pluck('recordedBy.name'))
+            ->merge($studentAbsences->pluck('recordedBy.name'))
+            ->filter()
+            ->unique()
+            ->values();
+
         // Calculate summary statistics
         $totalLateStudents = $lateAttendances->count();
         $latePerClass = $lateAttendances->groupBy('class_id')->map->count();
@@ -507,13 +635,20 @@ class LateAttendanceController extends Controller
             'totalLateStudents' => $totalLateStudents,
             'latePerClass' => $latePerClass,
             'totalExcused' => $totalExcused,
+            'studentAbsences' => $studentAbsences,
+            'groupedAbsences' => $groupedAbsences,
+            'totalAbsentStudents' => $totalAbsentStudents,
+            'absentPerClass' => $absentPerClass,
+            'absentByStatus' => $absentByStatus,
+            'teacherAbsences' => $teacherAbsences,
+            'picketTeachers' => $picketTeachers,
             'type' => $type,
             'classId' => $classId,
             'className' => $classId ? \App\Models\SchoolClass::find($classId)?->name : null,
         ];
 
         $pdf = Pdf::loadView('late-attendance.pdf-report', $data);
-        $filename = 'laporan-keterlambatan-' . $date . ($classId ? '-' . $data['className'] : '') . '.pdf';
+        $filename = 'laporan-terlambat-dan-ketidakhadiran-' . $date . ($classId ? '-' . $data['className'] : '') . '.pdf';
 
         return $pdf->download($filename);
     }

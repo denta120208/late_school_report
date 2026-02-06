@@ -61,19 +61,20 @@
                 </div>
                 
                 <div class="relative w-full max-w-full">
-                    <div class="flex items-center bg-white rounded-full border-2 border-slate-200 focus-within:border-custom-blue focus-within:ring-4 focus-within:ring-blue-100/50 transition-all duration-300 shadow-sm overflow-hidden h-14 hover:border-slate-300">
-                        <div class="pl-5 text-gray-400">
-                            <svg class="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="relative">
+                        <div class="pointer-events-none absolute inset-y-0 left-4 flex items-center" style="color: rgba(22, 11, 106, 0.55);">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                             </svg>
                         </div>
-                        <input type="text" id="student_search" placeholder="Ketik nama siswa..." 
-                            class="w-full px-4 py-3 md:py-4 text-base md:text-lg border-none bg-transparent focus:ring-0 placeholder-gray-400 text-gray-900 font-medium"
+                        <input type="text" id="student_search" placeholder="Ketik nama siswa..."
+                            class="late-attendance-input"
+                            style="border-radius: 9999px; padding-left: 48px; height: 56px; font-weight: 600;"
                             autocomplete="off">
                     </div>
                     
                     <!-- Dropdown list -->
-                    <div id="student_dropdown" class="hidden absolute z-50 w-full bg-white border border-gray-100 rounded-2xl shadow-2xl mt-3 overflow-hidden ring-1 ring-black ring-opacity-5 origin-top transform transition-all">
+                    <div id="student_dropdown" class="hidden absolute z-50 w-full bg-white rounded-2xl shadow-2xl mt-3 overflow-hidden ring-1 ring-black ring-opacity-5 origin-top transform transition-all" style="border: 1px solid rgba(22, 11, 106, 0.12);">
                         <div id="student_dropdown_inner" class="overflow-y-auto" style="max-height: 50vh;">
                             @foreach($students as $student)
                                 <div class="student-option px-5 md:px-6 py-4 hover:bg-gray-50 cursor-pointer border-b border-gray-100 last:border-0 transition-colors duration-150 active:bg-blue-50" 

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Laporan Keterlambatan Harian - {{ $date }}</title>
+    <title>Laporan Terlambat dan Ketidakhadiran - {{ $date }}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -208,7 +208,7 @@
     <!-- Header -->
     <div class="header">
         <div class="school-name">SMK PARIWISATA METLAND</div>
-        <div class="report-title">LAPORAN KETERLAMBATAN HARIAN</div>
+        <div class="report-title">LAPORAN TERLAMBAT DAN KETIDAKHADIRAN</div>
         <div class="report-date">{{ $date }}</div>
         @if($className)
             <div class="report-date">Kelas: {{ $className }}</div>
@@ -224,6 +224,10 @@
                 <div class="summary-value">{{ $totalLateStudents }}</div>
             </div>
             <div class="summary-item">
+                <div class="summary-label">Total Siswa Tidak Hadir</div>
+                <div class="summary-value">{{ $totalAbsentStudents ?? 0 }}</div>
+            </div>
+            <div class="summary-item">
                 <div class="summary-label">Total Berizin</div>
                 <div class="summary-value">{{ $totalExcused }}</div>
             </div>
@@ -232,6 +236,32 @@
                 <div class="summary-value">{{ $latePerClass->count() }}</div>
             </div>
         </div>
+    </div>
+
+    <div class="summary-section">
+        <div class="summary-title">Guru Piket</div>
+        @if(($picketTeachers ?? collect())->count() > 0)
+            <ol style="margin: 0; padding-left: 18px;">
+                @foreach($picketTeachers as $name)
+                    <li>{{ $name }}</li>
+                @endforeach
+            </ol>
+        @else
+            <div style="color: #666;">Belum ada data guru piket.</div>
+        @endif
+    </div>
+
+    <div class="summary-section">
+        <div class="summary-title">Guru Tidak Hadir</div>
+        @if(($teacherAbsences ?? collect())->count() > 0)
+            <ol style="margin: 0; padding-left: 18px;">
+                @foreach($teacherAbsences as $ta)
+                    <li>{{ $ta->teacher_name }}{{ $ta->reason ? ' (' . $ta->reason . ')' : '' }}</li>
+                @endforeach
+            </ol>
+        @else
+            <div style="color: #666;">Tidak ada data guru tidak hadir.</div>
+        @endif
     </div>
     
     @if($type === 'class' && $groupedData->count() > 0)
@@ -321,6 +351,56 @@
         </div>
         @endif
     @endif
+
+    <!-- Student Absence Report (S/I/A) -->
+    <div class="class-section">
+        <div class="class-header" style="border-left-color: #f59e0b;">
+            KETIDAKHADIRAN SISWA (S / I / A)
+        </div>
+
+        @if(($groupedAbsences ?? collect())->count() > 0)
+            @foreach($groupedAbsences as $className => $classAbsences)
+                <div class="class-section">
+                    <div class="class-header" style="border-left-color: #f59e0b;">
+                        {{ $className }} ({{ $classAbsences->count() }} siswa)
+                    </div>
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 5%;">No</th>
+                                <th style="width: 45%;">Nama Siswa</th>
+                                <th style="width: 20%;">Status</th>
+                                <th style="width: 30%;">Dicatat Oleh</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($classAbsences as $index => $absence)
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $absence->student->name }}</td>
+                                    <td>
+                                        @if($absence->status === 'S')
+                                            Sakit
+                                        @elseif($absence->status === 'I')
+                                            Izin
+                                        @else
+                                            Alpa
+                                        @endif
+                                    </td>
+                                    <td>{{ $absence->recordedBy->name ?? 'N/A' }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endforeach
+        @else
+            <div style="text-align: center; padding: 18px; color: #666;">
+                Tidak ada data ketidakhadiran untuk tanggal {{ $date }}
+            </div>
+        @endif
+    </div>
     
     
     <!-- Footer -->

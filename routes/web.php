@@ -7,6 +7,7 @@ use App\Http\Controllers\StudentController;
 use App\Http\Controllers\LateAttendanceController;
 use App\Http\Controllers\ExitPermissionController;
 use App\Http\Controllers\WalasController;
+use App\Http\Controllers\StudentAbsenceController;
 use App\Http\Controllers\Admin\ClassManagementController;
 use App\Http\Controllers\Admin\StudentManagementController;
 use App\Http\Controllers\Admin\UserManagementController;
@@ -40,6 +41,12 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/late-attendance/export-pdf', [LateAttendanceController::class, 'exportPDF'])->name('late-attendance.export-pdf');
     Route::get('/late-attendance/create/{studentId}', [LateAttendanceController::class, 'create'])->name('late-attendance.create');
     Route::post('/late-attendance', [LateAttendanceController::class, 'store'])->name('late-attendance.store');
+
+    // Student Absence (Input)
+    Route::middleware(['role:admin,teacher'])->group(function () {
+        Route::get('/student-absences/input', [StudentAbsenceController::class, 'create'])->name('student-absences.create');
+        Route::post('/student-absences', [StudentAbsenceController::class, 'store'])->name('student-absences.store');
+    });
     
     // Multi-student Late Attendance (new dynamic selection feature)
     Route::get('/late-attendance/multi-create', [LateAttendanceController::class, 'multiCreate'])->name('late-attendance.multi-create');
