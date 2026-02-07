@@ -11,7 +11,7 @@
 
                 <div class="text-center" style="padding-top: 10px; padding-bottom: 10px;">
                     <div class="mx-auto" style="width: 96px; height: 96px; display: flex; align-items: center; justify-content: center;">
-                        <img src="{{ asset('build/assets/form.png') }}" alt="Form" style="width: 100px; height: 100px; object-fit: contain; display: block;">
+                        <img src="{{ asset('images/form.png') }}" alt="Form" style="width: 100px; height: 100px; object-fit: contain; display: block;">
                     </div>
                     <h2 class="font-black text-3xl md:text-4xl text-white leading-tight drop-shadow-lg" style="margin-top: 18px; letter-spacing: 0.02em;">FORM IZIN KELUAR</h2>
                     <p class="late-attendance-hero-subtitle mt-3 text-sm md:text-base" style="font-weight: 700;">Lengkapi semua yang dibutuhkan</p>

@@ -7,12 +7,12 @@
             <div>
                 <h1 class="text-3xl font-black text-gray-900 mb-2" style="font-family: 'Poppins', sans-serif;">Selamat Datang, Admin!</h1>
                 <p class="text-sm text-gray-500 leading-relaxed" style="font-family: 'Poppins', sans-serif; font-weight: 400;">
-                    Let's start recording students who arrive late today.<br>
-                    All data is saved neatly and easy to check anytime
+                 Mari kita mulai mencatat siswa yang datang terlambat hari ini. <br>
+Semua data tersimpan rapi dan mudah diperiksa kapan saja.
                 </p>
             </div>
             <div class="hidden md:block">
-                <img src="{{ asset('build/assets/din.png') }}" alt="Illustration" class="object-contain drop-shadow-2xl" style="width: 240px; height: 240px;">
+                <img src="{{ asset('images/din.png') }}" alt="Illustration" class="object-contain drop-shadow-2xl" style="width: 240px; height: 240px;">
             </div>
         </div>
 
@@ -27,7 +27,7 @@
                         <div class="text-white text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Siswa terlambat</div>
                     </div>
                     <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-3">
-                        <img src="{{ asset('build/assets/jam.png') }}" alt="Clock" class="w-16 h-16 object-contain"  style="width: 100px; height: 100px;">
+                        <img src="{{ asset('images/jam.png') }}" alt="Clock" class="w-16 h-16 object-contain"  style="width: 100px; height: 100px;">
                     </div>
                 </div>
             </div>
@@ -41,7 +41,7 @@
                         <div class="text-white text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Siswa terlambat</div>
                     </div>
                     <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-3">
-                        <img src="{{ asset('build/assets/stat.png') }}" alt="Stats" class="w-16 h-16 object-contain" style="width: 100px; height: 100px;">
+                        <img src="{{ asset('images/stat.png') }}" alt="Stats" class="w-16 h-16 object-contain" style="width: 100px; height: 100px;">
                     </div>
                 </div>
             </div>
@@ -56,7 +56,7 @@
                         <div class="text-white text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Izin keluar perlu approval</div>
                     </div>
                     <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-3">
-                        <img src="{{ asset('build/assets/alert.png') }}" alt="Alert" class="w-16 h-16 object-contain" style="width: 130px; height: 100px;">
+                        <img src="{{ asset('images/alert.png') }}" alt="Alert" class="w-16 h-16 object-contain" style="width: 130px; height: 100px;">
                     </div>
                 </div>
             </div>

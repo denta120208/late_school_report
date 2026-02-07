@@ -27,7 +27,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: 40% center;
+            object-position: center;
             transform: scale(1);
             z-index: 0;
         }
@@ -105,6 +105,22 @@
             margin-bottom: 15px;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
+
+        /* Edugate Label */
+        .edugate-label {
+            max-width: 492px;
+            font-family: 'Poppins';
+            font-style: normal;
+            font-weight: 700;
+            font-size: 36px;
+            line-height: 54px;
+            color: #160B6A;
+            margin: 0 auto 15px auto;
+            padding: 0;
+            text-align: center;
+        }
+
+
 
         /* Welcome Text */
         .welcome-text {
@@ -225,6 +241,11 @@
                 padding: 40px;
             }
 
+            .edugate-label {
+                font-size: 32px;
+                line-height: 48px;
+            }
+
             .school-logo {
                 left: 40px;
                 top: 30px;
@@ -244,6 +265,13 @@
             .login-card {
                 max-width: 100%;
                 padding: 40px 30px;
+            }
+
+            .edugate-label {
+                font-size: 28px;
+                line-height: 42px;
+                margin-bottom: 12px;
+                max-width: 100%;
             }
 
             .login-title {
@@ -268,7 +296,7 @@
 </head>
 <body>
     <!-- Background Image -->
-    <img src="{{ asset('build/assets/sklh.png') }}" alt="School Background" class="background-image">
+    <img src="{{ asset('images/sklh.png') }}" alt="School Background" class="background-image">
     
     <!-- Overlay -->
     <div class="overlay"></div>
@@ -284,10 +312,11 @@
           
 
             <!-- Login Title -->
-            <h1 class="login-title">Login</h1>
+            <p class="edugate-label">EduGate.</p>
+            <h1 class="login-title">Masuk</h1>
 
             <!-- Welcome Text -->
-            <p class="welcome-text">Welcome back!, please login<br>to your account</p>
+            <p class="welcome-text">Selamat datang kembali, silakan masuk ke akun Anda</p>
 
             <!-- Error Messages -->
             @if (session('status'))
