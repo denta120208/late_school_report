@@ -28,19 +28,25 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     
-    // Classes (All authenticated users)
-    Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
-    Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
+    // Classes (All authenticated users except walas)
+    Route::middleware(['role:admin,teacher,homeroom_teacher'])->group(function () {
+        Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
+        Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
+    });
     
-    // Students
-    Route::get('/students/{id}', [StudentController::class, 'show'])->name('students.show');
+    // Students (except walas)
+    Route::middleware(['role:admin,teacher,homeroom_teacher'])->group(function () {
+        Route::get('/students/{id}', [StudentController::class, 'show'])->name('students.show');
+    });
     
-    // Late Attendance
-    Route::get('/late-attendance', [LateAttendanceController::class, 'index'])->name('late-attendance.index');
-    Route::get('/late-attendance/report', [LateAttendanceController::class, 'dailyReport'])->name('late-attendance.report');
-    Route::get('/late-attendance/export-pdf', [LateAttendanceController::class, 'exportPDF'])->name('late-attendance.export-pdf');
-    Route::get('/late-attendance/create/{studentId}', [LateAttendanceController::class, 'create'])->name('late-attendance.create');
-    Route::post('/late-attendance', [LateAttendanceController::class, 'store'])->name('late-attendance.store');
+    // Late Attendance (except walas)
+    Route::middleware(['role:admin,teacher,homeroom_teacher'])->group(function () {
+        Route::get('/late-attendance', [LateAttendanceController::class, 'index'])->name('late-attendance.index');
+        Route::get('/late-attendance/report', [LateAttendanceController::class, 'dailyReport'])->name('late-attendance.report');
+        Route::get('/late-attendance/export-pdf', [LateAttendanceController::class, 'exportPDF'])->name('late-attendance.export-pdf');
+        Route::get('/late-attendance/create/{studentId}', [LateAttendanceController::class, 'create'])->name('late-attendance.create');
+        Route::post('/late-attendance', [LateAttendanceController::class, 'store'])->name('late-attendance.store');
+    });
 
     // Student Absence (Input)
     Route::middleware(['role:admin,teacher'])->group(function () {
@@ -48,13 +54,15 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/student-absences', [StudentAbsenceController::class, 'store'])->name('student-absences.store');
     });
     
-    // Multi-student Late Attendance (new dynamic selection feature)
-    Route::get('/late-attendance/multi-create', [LateAttendanceController::class, 'multiCreate'])->name('late-attendance.multi-create');
-    Route::post('/late-attendance/multi-store', [LateAttendanceController::class, 'multiStore'])->name('late-attendance.multi-store');
-    
-    // Bulk Late Attendance
-    Route::post('/late-attendance/bulk-review', [LateAttendanceController::class, 'bulkReview'])->name('late-attendance.bulk-review');
-    Route::post('/late-attendance/bulk-store', [LateAttendanceController::class, 'bulkStore'])->name('late-attendance.bulk-store');
+    // Multi-student Late Attendance (new dynamic selection feature) - except walas
+    Route::middleware(['role:admin,teacher,homeroom_teacher'])->group(function () {
+        Route::get('/late-attendance/multi-create', [LateAttendanceController::class, 'multiCreate'])->name('late-attendance.multi-create');
+        Route::post('/late-attendance/multi-store', [LateAttendanceController::class, 'multiStore'])->name('late-attendance.multi-store');
+        
+        // Bulk Late Attendance
+        Route::post('/late-attendance/bulk-review', [LateAttendanceController::class, 'bulkReview'])->name('late-attendance.bulk-review');
+        Route::post('/late-attendance/bulk-store', [LateAttendanceController::class, 'bulkStore'])->name('late-attendance.bulk-store');
+    });
     
     // Admin and Teacher can update status
     Route::middleware(['role:admin,teacher'])->group(function () {
@@ -73,8 +81,8 @@ Route::middleware(['auth'])->group(function () {
         // AJAX endpoint to get students by class
         Route::get('/ajax/students-by-class', [ExitPermissionController::class, 'getStudentsByClass'])->name('students-by-class');
         
-        // Walas approval (homeroom teacher only) - Allow shared Walas access
-        Route::middleware(['role:homeroom_teacher'])->group(function () {
+        // Walas approval (homeroom teacher and walas) - Allow shared Walas access
+        Route::middleware(['role:walas,homeroom_teacher'])->group(function () {
             Route::post('/{exitPermission}/walas-approve', [ExitPermissionController::class, 'walasApprove'])->name('walas-approve');
         });
         
@@ -84,20 +92,22 @@ Route::middleware(['auth'])->group(function () {
         });
     });
     
-    // Walas (Homeroom Teacher) routes
-    Route::middleware(['role:homeroom_teacher'])->prefix('walas')->name('walas.')->group(function () {
+    // Walas routes - dedicated for exit permission approval only
+    Route::middleware(['role:walas,homeroom_teacher'])->prefix('walas')->name('walas.')->group(function () {
         Route::get('/dashboard', [WalasController::class, 'dashboard'])->name('dashboard');
         Route::get('/classes/{class}/verify-password', [WalasController::class, 'showPasswordForm'])->name('verify-password');
         Route::post('/classes/{class}/verify-password', [WalasController::class, 'verifyPasswordAndShowRequests'])->name('verify-password.store');
+    });
+    
+    // Student Management - accessible by admin, teacher, walas, and homeroom_teacher
+    Route::middleware(['role:admin,teacher,walas,homeroom_teacher'])->prefix('admin')->name('admin.')->group(function () {
+        Route::resource('students', StudentManagementController::class);
     });
     
     // Admin only routes
     Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
         // Class Management
         Route::resource('classes', ClassManagementController::class);
-        
-        // Student Management
-        Route::resource('students', StudentManagementController::class);
         
         // User Management
         Route::resource('users', UserManagementController::class);

@@ -61,7 +61,7 @@
                             </label>
                             <select id="student_id" name="student_id" class="late-attendance-input cursor-pointer" required>
                                 <option value="">Pilih Siswa</option>
-                                @if(auth()->user()->role === 'homeroom_teacher')
+                                @if(auth()->user()->role === 'homeroom_teacher' || auth()->user()->role === 'walas')
                                     @foreach($students as $student)
                                         <option value="{{ $student->id }}">{{ $student->name }} ({{ $student->student_number }})</option>
                                     @endforeach

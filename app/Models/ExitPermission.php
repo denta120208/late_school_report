@@ -26,6 +26,9 @@ class ExitPermission extends Model
         'admin_approved_at',
         'admin_notes',
         'status',
+        'whatsapp_sent',
+        'whatsapp_sent_at',
+        'whatsapp_recipient',
     ];
 
     protected $casts = [
@@ -33,6 +36,8 @@ class ExitPermission extends Model
         'exit_time' => 'datetime',
         'walas_approved_at' => 'datetime',
         'admin_approved_at' => 'datetime',
+        'whatsapp_sent' => 'boolean',
+        'whatsapp_sent_at' => 'datetime',
     ];
 
     // Relationships

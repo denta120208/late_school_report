@@ -217,7 +217,7 @@
                     </div>
                     @endif
 
-                    @if(auth()->user()->role === 'homeroom_teacher' && $exitPermission->walas_status === 'pending')
+                    @if((auth()->user()->role === 'homeroom_teacher' || auth()->user()->role === 'walas') && $exitPermission->walas_status === 'pending')
                         <form method="POST" action="{{ route('exit-permissions.walas-approve', $exitPermission->id) }}" class="mt-6 pt-6 border-t border-gray-100" onsubmit="return confirm('Apakah Anda yakin ingin mengirim keputusan ini?')">
                             @csrf
 

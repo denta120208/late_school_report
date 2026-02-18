@@ -82,16 +82,67 @@
             <!-- Filter & Search Controls -->
             <div class="late-attendance-card mb-6">
                 <div class="p-6">
-                    <form method="GET" action="{{ route('late-attendance.report') }}" class="space-y-4">
+                    <form method="GET" action="{{ route('late-attendance.report') }}" class="space-y-4" id="reportForm">
+                        <!-- Report Type Selector -->
+                        <div class="mb-4">
+                            <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Tipe Laporan</label>
+                            <div class="flex gap-2">
+                                <button type="button" onclick="setReportType('daily')" 
+                                    class="report-type-btn {{ $reportType === 'daily' ? 'active' : '' }}" data-type="daily">
+                                    <i class="fas fa-calendar-day mr-2"></i>Harian
+                                </button>
+                                <button type="button" onclick="setReportType('monthly')" 
+                                    class="report-type-btn {{ $reportType === 'monthly' ? 'active' : '' }}" data-type="monthly">
+                                    <i class="fas fa-calendar-alt mr-2"></i>Bulanan
+                                </button>
+                                <button type="button" onclick="setReportType('yearly')" 
+                                    class="report-type-btn {{ $reportType === 'yearly' ? 'active' : '' }}" data-type="yearly">
+                                    <i class="fas fa-calendar mr-2"></i>Tahunan
+                                </button>
+                            </div>
+                            <input type="hidden" name="type" id="reportType" value="{{ $reportType }}">
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                            <!-- Date Picker -->
-                            <div>
+                            <!-- Date Picker (for Daily) -->
+                            <div id="dailyFilter" class="{{ $reportType === 'daily' ? '' : 'hidden' }}">
                                 <label for="date" class="block text-sm font-medium text-gray-700">Tanggal</label>
                                 <input type="date" 
                                        name="date" 
                                        id="date" 
                                        value="{{ $date }}" 
                                        class="late-attendance-input mt-1">
+                            </div>
+
+                            <!-- Month & Year Picker (for Monthly) -->
+                            <div id="monthlyFilter" class="{{ $reportType === 'monthly' ? '' : 'hidden' }}">
+                                <label for="month" class="block text-sm font-medium text-gray-700">Bulan</label>
+                                <select name="month" id="month" class="late-attendance-input mt-1">
+                                    @for($m = 1; $m <= 12; $m++)
+                                        <option value="{{ str_pad($m, 2, '0', STR_PAD_LEFT) }}" {{ $month == str_pad($m, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                                            {{ \Carbon\Carbon::create(null, $m, 1)->format('F') }}
+                                        </option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <div id="monthlyYearFilter" class="{{ $reportType === 'monthly' ? '' : 'hidden' }}">
+                                <label for="year_monthly" class="block text-sm font-medium text-gray-700">Tahun</label>
+                                <select name="year" id="year_monthly" class="late-attendance-input mt-1">
+                                    @for($y = date('Y'); $y >= 2020; $y--)
+                                        <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
+                            </div>
+
+                            <!-- Year Picker (for Yearly) -->
+                            <div id="yearlyFilter" class="{{ $reportType === 'yearly' ? '' : 'hidden' }}">
+                                <label for="year_yearly" class="block text-sm font-medium text-gray-700">Tahun</label>
+                                <select name="year" id="year_yearly" class="late-attendance-input mt-1">
+                                    @for($y = date('Y'); $y >= 2020; $y--)
+                                        <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>{{ $y }}</option>
+                                    @endfor
+                                </select>
                             </div>
 
                             <!-- Class Filter -->
@@ -137,7 +188,7 @@
                                     class="late-attendance-primary-btn w-full flex justify-center items-center"
                                 >
                                     <i class="fas fa-search mr-2"></i>
-                                    <span>Search</span>
+                                    <span>Tampilkan</span>
                                 </button>
                             </div>
                         </div>
@@ -145,6 +196,28 @@
                     </form>
                 </div>
             </div>
+
+            <style>
+                .report-type-btn {
+                    padding: 0.5rem 1rem;
+                    border: 2px solid #e5e7eb;
+                    border-radius: 0.5rem;
+                    background-color: white;
+                    color: #6b7280;
+                    font-weight: 500;
+                    transition: all 0.3s;
+                    cursor: pointer;
+                }
+                .report-type-btn:hover {
+                    border-color: #6366f1;
+                    color: #6366f1;
+                }
+                .report-type-btn.active {
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: white;
+                    border-color: transparent;
+                }
+            </style>
 
             <!-- Late Attendance Data -->
             @if($groupByClass && $groupedData->count() > 0)
@@ -160,6 +233,7 @@
                             <table class="late-attendance-table">
                                 <thead>
                                     <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Siswa</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Datang</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Alasan</th>
@@ -169,6 +243,9 @@
                                 <tbody class="divide-y divide-gray-100">
                                     @foreach($classAttendances as $attendance)
                                     <tr class="late-attendance-table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($attendance->late_date)->format('d M Y') }}</div>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">{{ $attendance->student->name }}</div>
                                         </td>
@@ -214,7 +291,14 @@
                     <div class="p-6">
                         <div class="flex justify-between items-center mb-4">
                             <h3 class="text-lg font-semibold text-gray-900">
-                                Data Keterlambatan - {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                                Data Keterlambatan - 
+                                @if($reportType === 'daily')
+                                    {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                                @elseif($reportType === 'monthly')
+                                    {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
+                                @else
+                                    Tahun {{ $year }}
+                                @endif
                             </h3>
                             <div class="text-sm text-gray-500">
                                 Total: {{ $lateAttendances->count() }} siswa
@@ -226,6 +310,7 @@
                             <table class="late-attendance-table">
                                 <thead>
                                     <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Siswa</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kelas</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Waktu Datang</th>
@@ -236,6 +321,9 @@
                                 <tbody class="divide-y divide-gray-100">
                                     @foreach($lateAttendances as $attendance)
                                     <tr class="late-attendance-table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm text-gray-900">{{ \Carbon\Carbon::parse($attendance->late_date)->format('d M Y') }}</div>
+                                        </td>
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             <div class="text-sm font-medium text-gray-900">{{ $attendance->student->name }}</div>
                                         </td>
@@ -278,7 +366,15 @@
                         @else
                         <div class="text-center py-8">
                             <i class="fas fa-calendar-check text-gray-400 text-4xl mb-4"></i>
-                            <p class="text-gray-500">Tidak ada data keterlambatan untuk tanggal {{ \Carbon\Carbon::parse($date)->format('d F Y') }}</p>
+                            <p class="text-gray-500">Tidak ada data keterlambatan untuk 
+                                @if($reportType === 'daily')
+                                    {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                                @elseif($reportType === 'monthly')
+                                    {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
+                                @else
+                                    Tahun {{ $year }}
+                                @endif
+                            </p>
                         </div>
                         @endif
                     </div>
@@ -290,7 +386,14 @@
                 <div class="p-6">
                     <div class="flex justify-between items-center mb-4">
                         <h3 class="text-lg font-semibold text-gray-900">
-                            Data Ketidakhadiran (S / I / A / T / D) - {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                            Data Ketidakhadiran (S / I / A / T / D) - 
+                            @if($reportType === 'daily')
+                                {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                            @elseif($reportType === 'monthly')
+                                {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
+                            @else
+                                Tahun {{ $year }}
+                            @endif
                         </h3>
                         <div class="text-sm text-gray-500">
                             Total: {{ $totalAbsentStudents ?? 0 }} siswa
@@ -305,6 +408,7 @@
                                     <table class="late-attendance-table">
                                         <thead>
                                             <tr>
+                                                <th class="px-6 py-3 text-left">Tanggal</th>
                                                 <th class="px-6 py-3 text-left">Nama Siswa</th>
                                                 <th class="px-6 py-3 text-left">Status</th>
                                                 <th class="px-6 py-3 text-left">Dicatat Oleh</th>
@@ -313,6 +417,7 @@
                                         <tbody class="divide-y divide-gray-100">
                                             @foreach($classAbsences as $absence)
                                                 <tr class="late-attendance-table-row">
+                                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ \Carbon\Carbon::parse($absence->absence_date)->format('d M Y') }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $absence->student->name }}</td>
                                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                                         @if($absence->status === 'S')
@@ -338,7 +443,15 @@
                     @else
                         <div class="text-center py-8">
                             <i class="fas fa-user-check text-gray-400 text-4xl mb-4"></i>
-                            <p class="text-gray-500">Tidak ada data ketidakhadiran untuk tanggal {{ \Carbon\Carbon::parse($date)->format('d F Y') }}</p>
+                            <p class="text-gray-500">Tidak ada data ketidakhadiran untuk 
+                                @if($reportType === 'daily')
+                                    {{ \Carbon\Carbon::parse($date)->format('d F Y') }}
+                                @elseif($reportType === 'monthly')
+                                    {{ \Carbon\Carbon::create($year, $month, 1)->format('F Y') }}
+                                @else
+                                    Tahun {{ $year }}
+                                @endif
+                            </p>
                         </div>
                     @endif
                 </div>
@@ -431,6 +544,23 @@
     </div>
 
     <script>
+        // Set Report Type and Toggle Filters
+        function setReportType(type) {
+            // Update hidden input
+            document.getElementById('reportType').value = type;
+            
+            // Update button states
+            document.querySelectorAll('.report-type-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.report-type-btn[data-type="${type}"]`).classList.add('active');
+            
+            // Toggle filter visibility
+            document.getElementById('dailyFilter').classList.toggle('hidden', type !== 'daily');
+            document.getElementById('monthlyFilter').classList.toggle('hidden', type !== 'monthly');
+            document.getElementById('monthlyYearFilter').classList.toggle('hidden', type !== 'monthly');
+            document.getElementById('yearlyFilter').classList.toggle('hidden', type !== 'yearly');
+        }
 
         // Auto-submit form on Enter key press
         document.addEventListener('DOMContentLoaded', function() {

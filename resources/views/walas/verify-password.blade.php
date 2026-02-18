@@ -12,6 +12,27 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            
+            <!-- Error Alert - Show prominently at top -->
+            @if ($errors->any())
+                <div class="mb-6 bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-5 rounded-2xl shadow-2xl animate-shake">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-xl font-bold">❌ Password Salah!</h3>
+                            @foreach ($errors->all() as $error)
+                                <p class="mt-1 text-red-100">{{ $error }}</p>
+                            @endforeach
+                            <p class="mt-2 text-sm text-red-100">Silakan coba lagi atau hubungi administrator jika Anda lupa password kelas.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <!-- Password Form -->
@@ -29,15 +50,6 @@
                                 </p>
                             </div>
                         </div>
-
-                        <!-- Show validation errors -->
-                        @if ($errors->any())
-                            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
-                                @foreach ($errors->all() as $error)
-                                    <p>{{ $error }}</p>
-                                @endforeach
-                            </div>
-                        @endif
 
                         <form method="POST" action="{{ route('walas.verify-password.store', $class->id) }}">
                             @csrf

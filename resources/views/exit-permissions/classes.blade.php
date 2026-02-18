@@ -44,7 +44,7 @@
                     <div>
                         <p class="text-xl font-bold">ℹ️ Informasi</p>
                         <p class="text-blue-100 mt-1">
-                            @if(auth()->user()->isHomeroomTeacher())
+                            @if(auth()->user()->isHomeroomTeacher() || auth()->user()->isWalas())
                                 Pilih kelas Anda untuk melihat dan menyetujui permohonan izin keluar siswa
                             @else
                                 Pilih kelas untuk melihat semua permohonan izin keluar yang pending

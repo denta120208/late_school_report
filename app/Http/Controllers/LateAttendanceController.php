@@ -440,19 +440,31 @@ class LateAttendanceController extends Controller
     }
 
     /**
-     * Daily Late Attendance Report with filters, statistics and PDF export
+     * Late Attendance Report with filters, statistics and PDF export
+     * Supports daily, monthly, and yearly reports
      */
     public function dailyReport(Request $request)
     {
+        $reportType = $request->get('type', 'daily'); // daily, monthly, yearly
         $date = $request->get('date', Carbon::today()->format('Y-m-d'));
+        $month = $request->get('month', Carbon::today()->format('m'));
+        $year = $request->get('year', Carbon::today()->format('Y'));
         $classId = $request->get('class_id');
         $status = $request->get('status');
         $search = $request->get('search');
         $groupByClass = $request->boolean('group_by_class');
 
-        // Build the query for late attendances
-        $query = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
-            ->byDate($date);
+        // Build the query for late attendances based on report type
+        $query = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy']);
+        
+        // Apply date filter based on report type
+        if ($reportType === 'daily') {
+            $query->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $query->whereMonth('late_date', $month)->whereYear('late_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $query->whereYear('late_date', $year);
+        }
 
         // Apply role-based restrictions
         if (auth()->user()->isHomeroomTeacher()) {
@@ -487,9 +499,16 @@ class LateAttendanceController extends Controller
         // Get the data
         $lateAttendances = $query->orderBy('arrival_time')->get();
 
-        // Student absences (S/I/A)
-        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy'])
-            ->byDate($date);
+        // Student absences (S/I/A/T/D) - apply same date filter
+        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy']);
+        
+        if ($reportType === 'daily') {
+            $studentAbsencesQuery->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $studentAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $studentAbsencesQuery->whereYear('absence_date', $year);
+        }
 
         if (auth()->user()->isHomeroomTeacher()) {
             $studentAbsencesQuery->where('class_id', auth()->user()->assigned_class_id);
@@ -512,7 +531,18 @@ class LateAttendanceController extends Controller
         $absentByStatus = $studentAbsences->groupBy('status')->map->count();
         $groupedAbsences = $studentAbsences->groupBy('schoolClass.name');
 
-        $teacherAbsences = \App\Models\TeacherAbsence::byDate($date)->orderBy('teacher_name')->get();
+        
+        $teacherAbsencesQuery = \App\Models\TeacherAbsence::query();
+        
+        if ($reportType === 'daily') {
+            $teacherAbsencesQuery->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $teacherAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $teacherAbsencesQuery->whereYear('absence_date', $year);
+        }
+        
+        $teacherAbsences = $teacherAbsencesQuery->orderBy('teacher_name')->get();
 
         $picketTeachers = collect()
             ->merge($lateAttendances->pluck('recordedBy.name'))
@@ -539,6 +569,7 @@ class LateAttendanceController extends Controller
             : \App\Models\SchoolClass::active()->get();
 
         return view('late-attendance.daily-report', compact(
+            'reportType',
             'lateAttendances',
             'groupedData',
             'totalLateStudents',
@@ -555,6 +586,8 @@ class LateAttendanceController extends Controller
             'picketTeachers',
             'classes',
             'date',
+            'month',
+            'year',
             'classId',
             'status',
             'search',
@@ -563,18 +596,28 @@ class LateAttendanceController extends Controller
     }
 
     /**
-     * Export daily report as PDF
+     * Export report as PDF - supports daily, monthly, yearly
      */
     public function exportPDF(Request $request)
     {
+        $reportType = $request->get('type', 'daily'); // daily, monthly, yearly
         $date = $request->get('date', Carbon::today()->format('Y-m-d'));
+        $month = $request->get('month', Carbon::today()->format('m'));
+        $year = $request->get('year', Carbon::today()->format('Y'));
         $classId = $request->get('class_id');
-        $type = $request->get('type', 'daily'); // daily, class, detailed
         $search = $request->get('search');
 
-        // Build the query
-        $query = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
-            ->byDate($date);
+        // Build the query based on report type
+        $query = \App\Models\LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy']);
+        
+        // Apply date filter based on report type
+        if ($reportType === 'daily') {
+            $query->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $query->whereMonth('late_date', $month)->whereYear('late_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $query->whereYear('late_date', $year);
+        }
 
         // Apply role-based restrictions
         if (auth()->user()->isHomeroomTeacher()) {
@@ -587,8 +630,16 @@ class LateAttendanceController extends Controller
 
         $lateAttendances = $query->orderBy('arrival_time')->get();
 
-        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy'])
-            ->byDate($date);
+        // Student absences - apply same date filter
+        $studentAbsencesQuery = \App\Models\StudentAbsence::with(['student', 'schoolClass', 'recordedBy']);
+        
+        if ($reportType === 'daily') {
+            $studentAbsencesQuery->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $studentAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $studentAbsencesQuery->whereYear('absence_date', $year);
+        }
 
         if (auth()->user()->isHomeroomTeacher()) {
             $studentAbsencesQuery->where('class_id', auth()->user()->assigned_class_id);
@@ -611,7 +662,18 @@ class LateAttendanceController extends Controller
         $absentByStatus = $studentAbsences->groupBy('status')->map->count();
         $groupedAbsences = $studentAbsences->groupBy('schoolClass.name');
 
-        $teacherAbsences = \App\Models\TeacherAbsence::byDate($date)->orderBy('teacher_name')->get();
+        // Teacher absences - apply same date filter
+        $teacherAbsencesQuery = \App\Models\TeacherAbsence::query();
+        
+        if ($reportType === 'daily') {
+            $teacherAbsencesQuery->byDate($date);
+        } elseif ($reportType === 'monthly') {
+            $teacherAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year);
+        } elseif ($reportType === 'yearly') {
+            $teacherAbsencesQuery->whereYear('absence_date', $year);
+        }
+        
+        $teacherAbsences = $teacherAbsencesQuery->orderBy('teacher_name')->get();
 
         $picketTeachers = collect()
             ->merge($lateAttendances->pluck('recordedBy.name'))
@@ -628,8 +690,22 @@ class LateAttendanceController extends Controller
         // Group by class for class-specific reports
         $groupedData = $lateAttendances->groupBy('schoolClass.name');
 
+        // Generate period label based on report type
+        if ($reportType === 'daily') {
+            $periodLabel = Carbon::parse($date)->format('d F Y');
+            $filenameDate = $date;
+        } elseif ($reportType === 'monthly') {
+            $periodLabel = Carbon::create($year, $month, 1)->format('F Y');
+            $filenameDate = $year . '-' . $month;
+        } else {
+            $periodLabel = 'Tahun ' . $year;
+            $filenameDate = $year;
+        }
+
         $data = [
-            'date' => Carbon::parse($date)->format('d F Y'),
+            'reportType' => $reportType,
+            'periodLabel' => $periodLabel,
+            'date' => $periodLabel, // For backward compatibility
             'lateAttendances' => $lateAttendances,
             'groupedData' => $groupedData,
             'totalLateStudents' => $totalLateStudents,
@@ -642,13 +718,12 @@ class LateAttendanceController extends Controller
             'absentByStatus' => $absentByStatus,
             'teacherAbsences' => $teacherAbsences,
             'picketTeachers' => $picketTeachers,
-            'type' => $type,
             'classId' => $classId,
             'className' => $classId ? \App\Models\SchoolClass::find($classId)?->name : null,
         ];
 
         $pdf = Pdf::loadView('late-attendance.pdf-report', $data);
-        $filename = 'laporan-terlambat-dan-ketidakhadiran-' . $date . ($classId ? '-' . $data['className'] : '') . '.pdf';
+        $filename = 'laporan-' . $reportType . '-' . $filenameDate . ($classId ? '-' . $data['className'] : '') . '.pdf';
 
         return $pdf->download($filename);
     }

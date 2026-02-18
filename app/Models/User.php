@@ -23,6 +23,7 @@ class User extends Authenticatable
         'password',
         'role',
         'assigned_class_id',
+        'whatsapp_number',
     ];
 
     /**
@@ -73,5 +74,10 @@ class User extends Authenticatable
     public function isHomeroomTeacher()
     {
         return $this->role === 'homeroom_teacher';
+    }
+
+    public function isWalas()
+    {
+        return $this->role === 'walas';
     }
 }

@@ -219,7 +219,7 @@
                         Permohonan Per Kelas
                     </h3>
                     <p class="exit-permissions-subtitle mt-1 text-sm md:text-base">
-                        @if(auth()->user()->isHomeroomTeacher())
+                        @if(auth()->user()->isHomeroomTeacher() || auth()->user()->isWalas())
                             Lihat permohonan izin keluar dari kelas Anda
                         @else
                             Pilih kelas untuk melihat permohonan izin keluar

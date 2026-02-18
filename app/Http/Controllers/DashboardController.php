@@ -11,6 +11,11 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
         
+        // Redirect walas to their dedicated dashboard
+        if ($user->isWalas()) {
+            return redirect()->route('walas.dashboard');
+        }
+        
         // Get statistics based on role
         if ($user->isAdmin() || $user->isTeacher()) {
             $stats = [

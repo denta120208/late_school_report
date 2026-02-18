@@ -26,6 +26,8 @@
                         </svg>
                         Dashboard
                     </x-nav-link>
+
+                    @if(!Auth::user()->isWalas())
                     <x-nav-link :href="route('classes.index')" :active="request()->routeIs('classes.*')" class="!text-white hover:!bg-white hover:!bg-opacity-20 !border-transparent hover:!border-white">
                         <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -59,11 +61,22 @@
                                     <i class="fas fa-list mr-2"></i>Data Keterlambatan
                                 </a>
                                 <a href="{{ route('late-attendance.report') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ request()->routeIs('late-attendance.report') ? 'bg-gray-100' : '' }}">
-                                    <i class="fas fa-chart-bar mr-2"></i>Laporan Harian
+                                    <i class="fas fa-chart-bar mr-2"></i>Laporan Keterlambatan & Ketidakhadiran
                                 </a>
                             </div>
                         </div>
                     </div>
+                    @endif
+
+                    @if(Auth::user()->isAdmin() || Auth::user()->isTeacher() || Auth::user()->isWalas() || Auth::user()->isHomeroomTeacher())
+                        <x-nav-link :href="route('admin.students.index')" :active="request()->routeIs('admin.students.*')" class="!text-white hover:!bg-white hover:!bg-opacity-20 !border-transparent hover:!border-white">
+                            <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            Kelola Data Siswa
+                        </x-nav-link>
+                    @endif
+
                     <x-nav-link :href="route('exit-permissions.index')" :active="request()->routeIs('exit-permissions.*')" class="!text-white hover:!bg-white hover:!bg-opacity-20 !border-transparent hover:!border-white">
                         <svg class="w-5 h-5 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
@@ -130,6 +143,8 @@
             <a href="{{ route('dashboard') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('dashboard') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Dashboard') }}
             </a>
+
+            @if(!Auth::user()->isWalas())
             <a href="{{ route('classes.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('classes.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Catat Siswa Telat') }}
             </a>
@@ -147,9 +162,17 @@
                 {{ __('Data Keterlambatan') }}
             </a>
             <a href="{{ route('late-attendance.report') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('late-attendance.report') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
-                {{ __('Laporan Harian') }}
+                {{ __('Laporan Keterlambatan & Ketidakhadiran') }}
             </a>
             <div class="border-t border-white/10 my-2"></div>
+            @endif
+
+            @if(Auth::user()->isAdmin() || Auth::user()->isTeacher() || Auth::user()->isWalas() || Auth::user()->isHomeroomTeacher())
+                <a href="{{ route('admin.students.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('admin.students.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
+                    {{ __('Kelola Data Siswa') }}
+                </a>
+            @endif
+
             <a href="{{ route('exit-permissions.index') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-start text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('exit-permissions.*') ? 'border-white text-white bg-white/20' : 'border-transparent text-blue-100 hover:text-white hover:bg-white/10 hover:border-blue-300' }}">
                 {{ __('Izin Keluar Siswa') }}
             </a>

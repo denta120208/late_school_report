@@ -10,21 +10,12 @@ use App\Models\ExitPermission;
 class WalasController extends Controller
 {
     /**
-     * Display the Walas dashboard with all classes that have pending requests
+     * Display the Walas dashboard with feature cards
      */
     public function dashboard()
     {
-        // For shared Walas account, show ALL classes that have pending exit permission requests
-        // regardless of assigned_class_id since it's a shared account
-        $classesWithRequests = SchoolClass::whereHas('exitPermissions', function ($query) {
-            $query->where('walas_status', 'pending');
-        })->withCount(['exitPermissions' => function ($query) {
-            $query->where('walas_status', 'pending');
-        }])->with(['exitPermissions' => function ($query) {
-            $query->where('walas_status', 'pending')->latest()->take(3);
-        }])->get();
-
-        return view('walas.dashboard', compact('classesWithRequests'));
+        // Simple dashboard with feature cards for Kelola Data Siswa and Izin Keluar
+        return view('walas.dashboard');
     }
 
     /**
@@ -38,7 +29,7 @@ class WalasController extends Controller
 
         // Check if the provided password matches the class password
         if ($request->password !== $class->password) {
-            return back()->withErrors(['password' => 'Invalid class password.']);
+            return back()->withErrors(['password' => 'Password kelas salah! Silakan periksa kembali password yang Anda masukkan.'])->withInput();
         }
 
         // Get all pending exit permission requests for this class

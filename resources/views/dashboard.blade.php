@@ -69,30 +69,54 @@ Semua data tersimpan rapi dan mudah diperiksa kapan saja.
                 <h3 class="text-white font-bold text-lg" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Menu cepat</h3>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <a href="{{ route('classes.index') }}" class="card-primary rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
-                        <div class="bg-purple-500/30 rounded-full p-4 mb-4">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    @if(!Auth::user()->isWalas())
+                    <!-- Catat Telat -->
+                    <a href="{{ route('classes.index') }}" class="card-primary rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
+                        <div class="bg-purple-500/30 rounded-full p-3 mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
                         </div>
-                        <h4 class="text-white font-bold text-base mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Catat Siswa Telat</h4>
-                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Rekam keterlambatan</p>
+                        <h4 class="text-white font-bold text-sm mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Catat Telat</h4>
+                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Rekam keterlambatan siswa</p>
                     </a>
 
-                    <a href="{{ route('late-attendance.index') }}" class="card-primary rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
-                        <div class="bg-purple-500/30 rounded-full p-4 mb-4">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"/></svg>
+                    @if(Auth::user()->isAdmin() || Auth::user()->isTeacher())
+                    <!-- Input Kehadiran -->
+                    <a href="{{ route('student-absences.create') }}" class="card-primary rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
+                        <div class="bg-purple-500/30 rounded-full p-3 mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/>
+                            </svg>
                         </div>
-                        <h4 class="text-white font-bold text-base mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Laporan Keterlambatan</h4>
-                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Lihat data & statistik</p>
+                        <h4 class="text-white font-bold text-sm mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Input Kehadiran</h4>
+                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Catat kehadiran siswa</p>
+                    </a>
+                    @endif
+                    @endif
+
+                    <!-- Izin Keluar -->
+                    <a href="{{ route('exit-permissions.index') }}" class="card-primary rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
+                        <div class="bg-purple-500/30 rounded-full p-3 mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                            </svg>
+                        </div>
+                        <h4 class="text-white font-bold text-sm mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Izin Keluar</h4>
+                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Kelola izin keluar siswa</p>
                     </a>
 
-                    @if(auth()->user()->isAdmin())
-                    <a href="{{ route('admin.students.index') }}" class="card-primary rounded-2xl p-8 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
-                        <div class="bg-purple-500/30 rounded-full p-4 mb-4">
-                            <svg class="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>
+                    @if(Auth::user()->isAdmin() || Auth::user()->isTeacher() || Auth::user()->isWalas() || Auth::user()->isHomeroomTeacher())
+                    <!-- Kelola Data Siswa -->
+                    <a href="{{ route('admin.students.index') }}" class="card-primary rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all transform hover:scale-105 shadow-lg hover:opacity-90">
+                        <div class="bg-purple-500/30 rounded-full p-3 mb-3">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
+                            </svg>
                         </div>
-                        <h4 class="text-white font-bold text-base mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Kelola Data Siswa</h4>
-                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Admin panel</p>
+                        <h4 class="text-white font-bold text-sm mb-1" style="font-family: 'Poppins', sans-serif; font-weight: 700;">Kelola Data Siswa</h4>
+                        <p class="text-white/80 text-xs" style="font-family: 'Poppins', sans-serif; font-weight: 400;">Manajemen data siswa</p>
                     </a>
                     @endif
                 </div>

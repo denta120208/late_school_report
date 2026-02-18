@@ -111,29 +111,59 @@ Submission → Walas Approval → Admin Approval → Approved/Rejected
 ### 3. **Fitur Ketidakhadiran Siswa (Student Absence)**
 
 #### Tipe Ketidakhadiran
-- **S** - Sakit
-- **I** - Izin
-- **A** - Alpha (tanpa keterangan)
+- **S** - Sakit (Badge biru)
+- **I** - Izin (Badge kuning)
+- **A** - Alpha/tanpa keterangan (Badge merah)
+- **T** - Tefa/Teaching Factory (Badge ungu) ✨ *NEW*
+- **D** - Dispen/Dispensasi (Badge hijau) ✨ *NEW*
 
 #### Input Ketidakhadiran
 - Input per kelas secara massal
 - Pilih tanggal dan kelas
-- Centang siswa yang tidak hadir dengan statusnya
+- Centang siswa yang tidak hadir dengan statusnya (S/I/A/T/D)
 - Data tersimpan dan ditampilkan di laporan harian
+- Setiap status memiliki warna badge yang berbeda untuk kemudahan identifikasi
 
 ---
 
-### 4. **Laporan Harian (Daily Report)**
+### 4. **Laporan Multi-Range (Harian/Bulanan/Tahunan)** ✨ *NEW*
+
+#### Tipe Laporan
+Sistem mendukung 3 jenis laporan dengan filter tanggal yang berbeda:
+
+1. **Laporan Harian**
+   - Filter: Pilih tanggal spesifik
+   - Tampilkan data keterlambatan dan ketidakhadiran untuk 1 hari
+   - Export PDF: `laporan-daily-YYYY-MM-DD.pdf`
+
+2. **Laporan Bulanan** ✨ *NEW*
+   - Filter: Pilih bulan dan tahun
+   - Tampilkan semua data dalam 1 bulan
+   - Export PDF: `laporan-monthly-YYYY-MM.pdf`
+
+3. **Laporan Tahunan** ✨ *NEW*
+   - Filter: Pilih tahun
+   - Tampilkan semua data dalam 1 tahun
+   - Export PDF: `laporan-yearly-YYYY.pdf`
 
 #### Konten Laporan
 - Daftar siswa terlambat dengan detail waktu dan alasan
-- Daftar siswa tidak hadir (S/I/A) per kelas
+- Daftar siswa tidak hadir (S/I/A/T/D) per kelas ✨ *Updated*
 - Daftar guru yang tidak hadir
 - Statistik dan insights
 - Nama guru piket yang mencatat
 
+#### Fitur Dinamis
+- **Form berubah otomatis** sesuai tipe laporan yang dipilih
+- **Tipe Harian**: Tampilkan date picker
+- **Tipe Bulanan**: Tampilkan dropdown bulan + tahun
+- **Tipe Tahunan**: Tampilkan dropdown tahun
+- Filter tambahan: kelas, status, pencarian nama siswa
+
 #### Export PDF
-- Download laporan dalam format PDF
+- Download laporan dalam format PDF sesuai range yang dipilih
+- Judul PDF otomatis sesuai tipe (Laporan Harian/Bulanan/Tahunan)
+- Filename dinamis sesuai tipe dan periode
 - Professional layout dengan logo sekolah
 - Siap untuk dokumentasi dan arsip
 
@@ -152,8 +182,8 @@ Tabel berikut merangkum semua fitur utama dan fungsi-fungsi yang menjalankannya:
 | **Input Keterlambatan Multi** | LateAttendanceController | `multiCreate()`, `multiStore()` | ✅ Telegram + WhatsApp |
 | **Input Keterlambatan Bulk** | LateAttendanceController | `bulkReview()`, `bulkStore()` | ✅ Telegram + WhatsApp |
 | **Daftar Keterlambatan** | LateAttendanceController | `index()` | - |
-| **Laporan Harian** | LateAttendanceController | `dailyReport()` | - |
-| **Export PDF** | LateAttendanceController | `exportPDF()` | - |
+| **Laporan Multi-Range** ✨ | LateAttendanceController | `dailyReport()` | - |
+| **Export PDF Multi-Range** ✨ | LateAttendanceController | `exportPDF()` | - |
 | **Update Status Keterlambatan** | LateAttendanceController | `updateStatus()` | - |
 | **Daftar Izin Keluar** | ExitPermissionController | `index()`, `classList()` | - |
 | **Buat Izin Keluar** | ExitPermissionController | `create()`, `store()` | - |
@@ -304,7 +334,7 @@ Status Akhir:
   - Jika salah satu rejected → status = 'rejected'
 ```
 
-### 5️⃣ Alur Input Ketidakhadiran Siswa (S/I/A)
+### 5️⃣ Alur Input Ketidakhadiran Siswa (S/I/A/T/D) ✨ *Updated*
 
 ```
 User (Admin/Teacher) → Akses /student-absences/input
@@ -313,42 +343,67 @@ StudentAbsenceController@create
   ├─ Pilih tanggal, grade, major
   └─ Load siswa dari kelas terpilih
   ↓
-User → Centang status (S/I/A) untuk setiap siswa
+User → Centang status (S/I/A/T/D) untuk setiap siswa ✨
+  ├─ S (Sakit) - Badge biru
+  ├─ I (Izin) - Badge kuning
+  ├─ A (Alpa) - Badge merah
+  ├─ T (Tefa) - Badge ungu ✨ NEW
+  └─ D (Dispen) - Badge hijau ✨ NEW
   ↓
 StudentAbsenceController@store
-  ├─ Validasi data
+  ├─ Validasi data (in:S,I,A,T,D) ✨
   ├─ Delete existing records untuk tanggal ini (transaction)
   ├─ Insert new records untuk siswa yang dipilih
   └─ Commit transaction
   ↓
-Data tersimpan dan muncul di Laporan Harian
+Data tersimpan dan muncul di Laporan (Harian/Bulanan/Tahunan)
 ```
 
-### 6️⃣ Alur Laporan Harian
+### 6️⃣ Alur Laporan Multi-Range (Harian/Bulanan/Tahunan) ✨ *Updated*
 
 ```
 User → Akses /late-attendance/report
   ↓
+User → Pilih Tipe Laporan ✨
+  ├─ Harian → Form tampilkan Date Picker
+  ├─ Bulanan → Form tampilkan Month + Year Selector
+  └─ Tahunan → Form tampilkan Year Selector
+  ↓
 LateAttendanceController@dailyReport
-  ├─ Get data keterlambatan (byDate)
-  ├─ Get data ketidakhadiran siswa (S/I/A)
+  ├─ Deteksi tipe laporan (daily/monthly/yearly) ✨
+  ├─ Apply filter tanggal sesuai tipe:
+  │  ├─ Daily: byDate($date)
+  │  ├─ Monthly: whereMonth() + whereYear() ✨
+  │  └─ Yearly: whereYear() ✨
+  ├─ Get data keterlambatan
+  ├─ Get data ketidakhadiran siswa (S/I/A/T/D) ✨
   ├─ Get data guru absent
   ├─ Hitung statistik (total, per kelas, time range, excused)
   ├─ Identifikasi guru piket (dari recordedBy)
   └─ Get monthly insights
   ↓
 Tampilkan laporan lengkap dengan:
+  - Dropdown tipe laporan dengan 3 tombol (Harian/Bulanan/Tahunan) ✨
+  - Form filter dinamis sesuai tipe yang dipilih ✨
   - Tabel siswa terlambat (groupable by class)
-  - Tabel ketidakhadiran (S/I/A) per kelas
+  - Tabel ketidakhadiran (S/I/A/T/D) per kelas ✨
   - Tabel guru absent
   - Card statistik
   - Nama guru piket
+  - Judul periode dinamis (contoh: "8 Februari 2026" / "Februari 2026" / "Tahun 2026") ✨
   ↓
 User → Klik Export PDF
   ↓
 LateAttendanceController@exportPDF
-  ├─ Get same data as dailyReport
+  ├─ Deteksi tipe laporan dari request ✨
+  ├─ Apply filter yang sama dengan dailyReport ✨
+  ├─ Generate period label dinamis ✨
+  ├─ Generate filename dinamis: ✨
+  │  ├─ laporan-daily-2026-02-08.pdf
+  │  ├─ laporan-monthly-2026-02.pdf
+  │  └─ laporan-yearly-2026.pdf
   ├─ Generate PDF dengan DomPDF
+  │  └─ Judul: "LAPORAN HARIAN/BULANAN/TAHUNAN" ✨
   └─ Download file PDF
 ```
 
@@ -689,66 +744,127 @@ $lateAttendances = $query->orderBy('late_date', 'desc')->paginate(20);
 
 **Output**: View `late-attendance.index` dengan pagination
 
-#### `dailyReport(Request $request)`
-**Route**: `GET /late-attendance/report`  
-**Fitur**: Laporan harian lengkap  
-**Fungsi**: Menampilkan laporan harian keterlambatan + ketidakhadiran + guru absent
+#### `dailyReport(Request $request)` ✨ *Updated*
+**Route**: `GET /late-attendance/report?type={daily|monthly|yearly}`  
+**Fitur**: Laporan multi-range (harian/bulanan/tahunan)  
+**Fungsi**: Menampilkan laporan keterlambatan + ketidakhadiran dengan filter range dinamis
 
 **Kode yang bekerja**:
 ```php
+// 1. Deteksi tipe laporan
+$reportType = $request->get('type', 'daily'); // daily, monthly, yearly ✨
 $date = $request->get('date', Carbon::today()->format('Y-m-d'));
+$month = $request->get('month', Carbon::today()->format('m')); // ✨ NEW
+$year = $request->get('year', Carbon::today()->format('Y')); // ✨ NEW
 
-// 1. Data keterlambatan
-$lateAttendances = LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy'])
-    ->byDate($date)
-    ->orderBy('arrival_time')
-    ->get();
+// 2. Data keterlambatan dengan filter dinamis
+$query = LateAttendance::with(['student', 'schoolClass', 'lateReason', 'recordedBy']);
 
-// 2. Data ketidakhadiran siswa (S/I/A)
-$studentAbsences = StudentAbsence::with(['student', 'schoolClass', 'recordedBy'])
-    ->byDate($date)
-    ->orderBy('class_id')
-    ->get();
+if ($reportType === 'daily') {
+    $query->byDate($date);
+} elseif ($reportType === 'monthly') {
+    $query->whereMonth('late_date', $month)->whereYear('late_date', $year); // ✨
+} elseif ($reportType === 'yearly') {
+    $query->whereYear('late_date', $year); // ✨
+}
 
-// 3. Data guru absent
-$teacherAbsences = TeacherAbsence::byDate($date)->orderBy('teacher_name')->get();
+$lateAttendances = $query->orderBy('arrival_time')->get();
 
-// 4. Guru piket (yang mencatat)
-$picketTeachers = collect()
-    ->merge($lateAttendances->pluck('recordedBy.name'))
-    ->merge($studentAbsences->pluck('recordedBy.name'))
-    ->filter()->unique()->values();
+// 3. Data ketidakhadiran siswa (S/I/A/T/D) ✨ Updated
+$studentAbsencesQuery = StudentAbsence::with(['student', 'schoolClass', 'recordedBy']);
 
-// 5. Statistik
+if ($reportType === 'daily') {
+    $studentAbsencesQuery->byDate($date);
+} elseif ($reportType === 'monthly') {
+    $studentAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year); // ✨
+} elseif ($reportType === 'yearly') {
+    $studentAbsencesQuery->whereYear('absence_date', $year); // ✨
+}
+
+$studentAbsences = $studentAbsencesQuery->orderBy('class_id')->get();
+
+// 4. Data guru absent dengan filter yang sama ✨
+$teacherAbsencesQuery = TeacherAbsence::query();
+
+if ($reportType === 'daily') {
+    $teacherAbsencesQuery->byDate($date);
+} elseif ($reportType === 'monthly') {
+    $teacherAbsencesQuery->whereMonth('absence_date', $month)->whereYear('absence_date', $year);
+} elseif ($reportType === 'yearly') {
+    $teacherAbsencesQuery->whereYear('absence_date', $year);
+}
+
+$teacherAbsences = $teacherAbsencesQuery->orderBy('teacher_name')->get();
+
+// 5. Statistik (sama seperti sebelumnya)
 $totalLateStudents = $lateAttendances->count();
-$latePerClass = $lateAttendances->groupBy('class_id')->map->count();
-$mostCommonTimeRange = $this->getMostCommonTimeRange($lateAttendances);
-$totalExcused = $this->getExcusedCount($lateAttendances, $date);
-$groupedData = $lateAttendances->groupBy('schoolClass.name');
+$absentByStatus = $studentAbsences->groupBy('status')->map->count(); // Termasuk T & D ✨
 ```
 
-**Output**: View `late-attendance.daily-report` dengan semua data laporan
+**Output**: View `late-attendance.daily-report` dengan:
+- Dropdown tipe laporan (3 tombol: Harian/Bulanan/Tahunan) ✨
+- Form filter dinamis yang berubah sesuai tipe ✨
+- Judul periode dinamis ✨
+- Data sesuai range yang dipilih
 
-#### `exportPDF(Request $request)`
-**Route**: `GET /late-attendance/export-pdf`  
-**Fitur**: Export laporan ke PDF  
-**Fungsi**: Generate PDF dari laporan harian
+#### `exportPDF(Request $request)` ✨ *Updated*
+**Route**: `GET /late-attendance/export-pdf?type={daily|monthly|yearly}`  
+**Fitur**: Export laporan ke PDF (mendukung semua tipe)  
+**Fungsi**: Generate PDF dari laporan dengan range dinamis
 
 **Kode yang bekerja**:
 ```php
-// 1. Ambil data yang sama dengan dailyReport()
-$lateAttendances = LateAttendance::with([...])->byDate($date)->get();
-$studentAbsences = StudentAbsence::with([...])->byDate($date)->get();
-$teacherAbsences = TeacherAbsence::byDate($date)->get();
+// 1. Deteksi tipe dan ambil data sesuai range ✨
+$reportType = $request->get('type', 'daily');
+$date = $request->get('date', Carbon::today()->format('Y-m-d'));
+$month = $request->get('month', Carbon::today()->format('m'));
+$year = $request->get('year', Carbon::today()->format('Y'));
 
-// 2. Generate PDF
+// Apply filter yang sama dengan dailyReport() ✨
+$query = LateAttendance::with([...]); 
+
+if ($reportType === 'daily') {
+    $query->byDate($date);
+} elseif ($reportType === 'monthly') {
+    $query->whereMonth('late_date', $month)->whereYear('late_date', $year);
+} elseif ($reportType === 'yearly') {
+    $query->whereYear('late_date', $year);
+}
+
+$lateAttendances = $query->get();
+// ... sama untuk studentAbsences dan teacherAbsences
+
+// 2. Generate period label dinamis ✨
+if ($reportType === 'daily') {
+    $periodLabel = Carbon::parse($date)->format('d F Y');
+    $filenameDate = $date;
+} elseif ($reportType === 'monthly') {
+    $periodLabel = Carbon::create($year, $month, 1)->format('F Y');
+    $filenameDate = $year . '-' . $month;
+} else {
+    $periodLabel = 'Tahun ' . $year;
+    $filenameDate = $year;
+}
+
+// 3. Generate PDF ✨
+$data = [
+    'reportType' => $reportType, // ✨ NEW
+    'periodLabel' => $periodLabel, // ✨ NEW
+    'lateAttendances' => $lateAttendances,
+    'studentAbsences' => $studentAbsences, // Termasuk status T & D ✨
+    // ... data lainnya
+];
+
 $pdf = Pdf::loadView('late-attendance.pdf-report', $data);
-$filename = 'laporan-terlambat-dan-ketidakhadiran-' . $date . '.pdf';
+$filename = 'laporan-' . $reportType . '-' . $filenameDate . '.pdf'; // ✨ Dinamis
 
 return $pdf->download($filename);
 ```
 
-**Output**: Download file PDF
+**Output**: Download file PDF dengan:
+- Filename dinamis: `laporan-daily-2026-02-08.pdf` / `laporan-monthly-2026-02.pdf` / `laporan-yearly-2026.pdf` ✨
+- Judul PDF: "LAPORAN HARIAN/BULANAN/TAHUNAN TERLAMBAT DAN KETIDAKHADIRAN" ✨
+- Konten sesuai range yang dipilih ✨
 
 #### `updateStatus(Request $request, $id)`
 **Route**: `PATCH /late-attendance/{id}/status`  

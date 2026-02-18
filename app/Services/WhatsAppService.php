@@ -171,6 +171,134 @@ class WhatsAppService
     }
 
     /**
+     * Kirim notifikasi WhatsApp ke wali kelas ketika ada pengajuan izin keluar
+     */
+    public function sendExitPermissionNotificationToWalas($exitPermission)
+    {
+        if (!$this->apiKey) {
+            \Log::warning('WAPISender API key tidak ditemukan');
+            return false;
+        }
+
+        $student = $exitPermission->student;
+        $class = $exitPermission->schoolClass;
+        
+        // Ambil nomor WhatsApp wali kelas dari tabel classes
+        if (!$class->walas_whatsapp) {
+            \Log::warning("Nomor WhatsApp wali kelas tidak tersedia untuk kelas: {$class->name}");
+            return false;
+        }
+
+        try {
+            // Format nomor telepon (pastikan format 62xxx)
+            $phoneNumber = $this->formatPhoneNumber($class->walas_whatsapp);
+            
+            // Format pesan
+            $message = $this->formatExitPermissionMessage($exitPermission);
+
+            // Kirim pesan via WAPISender API v5
+            $response = Http::timeout(30)
+                ->asForm()
+                ->post($this->baseUrl . '/api/v5/message/text', [
+                    'api_key' => $this->apiKey,
+                    'device_key' => $this->deviceKey,
+                    'destination' => $phoneNumber,
+                    'message' => $message,
+                ]);
+
+            if ($response->successful()) {
+                $walasName = $class->walas_name ?? 'Wali Kelas';
+                \Log::info("WhatsApp berhasil dikirim ke wali kelas {$class->name} ({$walasName}): {$phoneNumber}");
+                
+                // Update status pengiriman WhatsApp
+                $exitPermission->update([
+                    'whatsapp_sent' => true,
+                    'whatsapp_sent_at' => now(),
+                    'whatsapp_recipient' => $phoneNumber,
+                ]);
+                
+                return true;
+            } else {
+                \Log::error('WAPISender error: ' . $response->body());
+                return false;
+            }
+
+        } catch (Exception $e) {
+            \Log::error('WhatsApp send error: ' . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Format pesan WhatsApp untuk notifikasi izin keluar
+     */
+    private function formatExitPermissionMessage($exitPermission)
+    {
+        $student = $exitPermission->student;
+        $class = $exitPermission->schoolClass;
+        $submitter = $exitPermission->submittedBy;
+        $date = $exitPermission->exit_date->format('d F Y');
+        $timeOut = $exitPermission->time_out ? date('H:i', strtotime($exitPermission->time_out)) : '-';
+        $timeIn = $exitPermission->time_in ? date('H:i', strtotime($exitPermission->time_in)) : '-';
+        
+        // Tentukan jenis izin
+        $permissionTypeText = '';
+        switch ($exitPermission->permission_type) {
+            case 'sick':
+                $permissionTypeText = '🤒 Sakit';
+                break;
+            case 'leave_early':
+                $permissionTypeText = '🏃 Pulang Lebih Awal';
+                break;
+            case 'permission_out':
+                $permissionTypeText = '🚪 Izin Keluar';
+                break;
+            default:
+                $permissionTypeText = $exitPermission->permission_type;
+        }
+
+        $walasName = $class->walas_name ?? 'Wali Kelas';
+
+        $message = "🔔 *NOTIFIKASI IZIN KELUAR SISWA*\n\n";
+        $message .= "Yth. Wali Kelas {$class->name}";
+        if ($class->walas_name) {
+            $message .= " ({$walasName})";
+        }
+        $message .= ",\n\n";
+        $message .= "Ada pengajuan izin keluar yang perlu persetujuan Anda:\n\n";
+        
+        $message .= "─────────────────────\n";
+        $message .= "👤 *Nama Siswa:* {$student->name}\n";
+        $message .= "📌 *NIS:* {$student->student_number}\n";
+        $message .= "🏫 *Kelas:* {$class->name}\n\n";
+        
+        $message .= "📋 *Jenis Izin:* {$permissionTypeText}\n";
+        $message .= "📅 *Tanggal:* {$date}\n";
+        $message .= "⏰ *Waktu Keluar:* {$timeOut} WIB\n";
+        
+        if ($exitPermission->permission_type === 'permission_out') {
+            $message .= "⏱️ *Waktu Kembali:* {$timeIn} WIB\n";
+        }
+        
+        $message .= "\n📝 *Alasan:*\n{$exitPermission->reason}\n";
+        
+        if ($exitPermission->additional_notes) {
+            $message .= "\n💬 *Catatan Tambahan:*\n{$exitPermission->additional_notes}\n";
+        }
+        
+        $message .= "\n─────────────────────\n";
+        $message .= "✍️ *Diajukan oleh:* {$submitter->name}\n";
+        $message .= "🕐 *Waktu Pengajuan:* " . $exitPermission->created_at->format('d M Y, H:i') . " WIB\n\n";
+        
+        $message .= "⚠️ *Silakan login ke sistem untuk menyetujui/menolak permohonan ini.*\n\n";
+        
+        $message .= "🏫 _Tim Administrasi Sekolah_\n";
+        $message .= "_Pesan otomatis dari Sistem Manajemen Sekolah_";
+
+        return $message;
+    }
+
+    /**
      * Test koneksi API WAPISender
      */
     public function testConnection()

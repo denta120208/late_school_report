@@ -15,6 +15,8 @@ class SchoolClass extends Model
         'description',
         'is_active',
         'password',
+        'walas_name',
+        'walas_whatsapp',
     ];
 
     protected $casts = [

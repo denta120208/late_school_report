@@ -12,12 +12,12 @@ class WalasUserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create shared Walas account
+        // Create shared Walas account - dedicated for exit permission approval only
         \App\Models\User::create([
             'name' => 'Walas Shared Account',
             'email' => 'walas@sekolah.com',
             'password' => \Illuminate\Support\Facades\Hash::make('walas2024'),
-            'role' => 'homeroom_teacher',
+            'role' => 'walas',
             'email_verified_at' => now(),
         ]);
     }

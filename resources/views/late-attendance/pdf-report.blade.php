@@ -208,8 +208,20 @@
     <!-- Header -->
     <div class="header">
         <div class="school-name">SMK PARIWISATA METLAND</div>
-        <div class="report-title">LAPORAN TERLAMBAT DAN KETIDAKHADIRAN</div>
-        <div class="report-date">{{ $date }}</div>
+        <div class="report-title">
+            LAPORAN 
+            @if(isset($reportType))
+                @if($reportType === 'daily')
+                    HARIAN
+                @elseif($reportType === 'monthly')
+                    BULANAN
+                @elseif($reportType === 'yearly')
+                    TAHUNAN
+                @endif
+            @endif
+            TERLAMBAT DAN KETIDAKHADIRAN
+        </div>
+        <div class="report-date">{{ $periodLabel ?? $date }}</div>
         @if($className)
             <div class="report-date">Kelas: {{ $className }}</div>
         @endif
@@ -264,7 +276,7 @@
         @endif
     </div>
     
-    @if($type === 'class' && $groupedData->count() > 0)
+    @if(($groupedData ?? collect())->count() > 0 && request('group_by_class'))
         <!-- Grouped by Class Report -->
         @foreach($groupedData as $className => $classAttendances)
         <div class="class-section">
@@ -276,9 +288,10 @@
                 <thead>
                     <tr>
                         <th style="width: 5%;">No</th>
-                        <th style="width: 30%;">Nama Siswa</th>
-                        <th style="width: 20%;">Waktu Datang</th>
-                        <th style="width: 25%;">Alasan Terlambat</th>
+                        <th style="width: 15%;">Tanggal</th>
+                        <th style="width: 25%;">Nama Siswa</th>
+                        <th style="width: 15%;">Waktu Datang</th>
+                        <th style="width: 20%;">Alasan Terlambat</th>
                         <th style="width: 20%;">Keterangan</th>
                     </tr>
                 </thead>
@@ -286,6 +299,7 @@
                     @foreach($classAttendances as $index => $attendance)
                     <tr>
                         <td>{{ $index + 1 }}</td>
+                        <td>{{ \Carbon\Carbon::parse($attendance->late_date)->format('d M Y') }}</td>
                         <td>{{ $attendance->student->name }}</td>
                         <td>
                             {{ \Carbon\Carbon::parse($attendance->arrival_time)->format('H:i') }}
@@ -314,17 +328,19 @@
             <thead>
                 <tr>
                     <th style="width: 5%;">No</th>
-                    <th style="width: 25%;">Nama Siswa</th>
-                    <th style="width: 20%;">Kelas</th>
-                    <th style="width: 20%;">Waktu Datang</th>
-                    <th style="width: 25%;">Alasan Terlambat</th>
-                    <th style="width: 15%;">Keterangan</th>
+                    <th style="width: 12%;">Tanggal</th>
+                    <th style="width: 23%;">Nama Siswa</th>
+                    <th style="width: 15%;">Kelas</th>
+                    <th style="width: 15%;">Waktu Datang</th>
+                    <th style="width: 20%;">Alasan Terlambat</th>
+                    <th style="width: 10%;">Keterangan</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($lateAttendances as $index => $attendance)
                 <tr>
                     <td>{{ $index + 1 }}</td>
+                    <td>{{ \Carbon\Carbon::parse($attendance->late_date)->format('d M Y') }}</td>
                     <td>{{ $attendance->student->name }}</td>
                     <td>{{ $attendance->schoolClass->name }}</td>
                     <td>
@@ -347,7 +363,7 @@
         </table>
         @else
         <div style="text-align: center; padding: 40px; color: #666;">
-            <p>Tidak ada data keterlambatan untuk tanggal {{ $date }}</p>
+            <p>Tidak ada data keterlambatan untuk {{ $periodLabel ?? $date }}</p>
         </div>
         @endif
     @endif
@@ -369,15 +385,17 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%;">No</th>
-                                <th style="width: 45%;">Nama Siswa</th>
+                                <th style="width: 15%;">Tanggal</th>
+                                <th style="width: 35%;">Nama Siswa</th>
                                 <th style="width: 20%;">Status</th>
-                                <th style="width: 30%;">Dicatat Oleh</th>
+                                <th style="width: 25%;">Dicatat Oleh</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($classAbsences as $index => $absence)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($absence->absence_date)->format('d M Y') }}</td>
                                     <td>{{ $absence->student->name }}</td>
                                     <td>
                                         @if($absence->status === 'S')
@@ -401,7 +419,7 @@
             @endforeach
         @else
             <div style="text-align: center; padding: 18px; color: #666;">
-                Tidak ada data ketidakhadiran untuk tanggal {{ $date }}
+                Tidak ada data ketidakhadiran untuk {{ $periodLabel ?? $date }}
             </div>
         @endif
     </div>
